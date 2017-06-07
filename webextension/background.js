@@ -10,11 +10,9 @@
 import getRandomId from './lib/get-random-id';
 const store = browser.storage.local;
 
-store.clear(); // TODO: remove this before launch
-
 function initStorage() {
   store.get().then(r => {
-    let storage = {};
+    let storage = Object.assign({}, r);
     if (!r.clientUUID) storage.clientUUID = getRandomId();
     if (!r.width) storage.width = browser.runtime.getManifest().config['DEFAULT_WIDTH'];
     if (!r.height) storage.height = browser.runtime.getManifest().config['DEFAULT_HEIGHT'];
@@ -41,6 +39,7 @@ const port = browser.runtime.connect({name: 'connection-to-legacy'});
 
 port.onMessage.addListener((msg) => {
   if (msg.content === 'msg-from-frontend') handleMessage(msg.data, port);
+  if (msg.content === 'context-menu') onLaunch(msg.data);
   if (msg.content === 'position-changed') {
     browser.storage.local.set({
       top: msg.data.top,
@@ -56,9 +55,9 @@ function onStorageChanged(changes) {
   if (changes.height) dimensionsUpdate({height: changes.height.newValue});
 }
 
-browser.runtime.onMessage.addListener(onIconOverlayMessage);
+browser.runtime.onMessage.addListener(onLaunch);
 
-function onIconOverlayMessage(opts) {
+function onLaunch(opts) {
   const title = opts.title;
   delete opts.title;
 
