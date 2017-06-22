@@ -2,7 +2,7 @@
   "name": "Min Vid",
   "version": "0.1.0",
   "manifest_version": 1,
-  "permissions": ["storage"],
+  "permissions": ["storage", "alarms"],
   "background": {
     "scripts": ["background.js"]
   },
@@ -11,5 +11,9 @@
       "matches": ["*"],
       "js": ["icon-overlay.js", "icon-overlay.css", "get-dimensions.js"]
     }
-  ]
+  ],
+  "options_ui": {
+    "page": "options.html",
+    "browser_style": true
+  }
 }
