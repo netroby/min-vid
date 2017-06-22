@@ -27,13 +27,6 @@ const windowUtils = require('./lib/window-utils');
 
 const prefs = require('sdk/simple-prefs').prefs;
 
-// default dimensions (for the case where width/height pref is
-// set before a new page is opened)
-let dimensions = {
-  height: 768,
-  width: 1024
-};
-
 exports.main = function() {
   contextMenuHandlers.init(windowUtils.getWindow());
 };
@@ -62,24 +55,10 @@ function onMessage(opts) {
 
     launchVideo(opts);
   } else if (title === 'metric') sendMetricsData(opts);
-  else if (title === 'dimensions') dimensions = opts;
 }
 
 exports.onUnload = function() {
   windowUtils.destroy(true);
   contextMenuHandlers.destroy();
   launchIconsMod.destroy();
-  pageDimensionMod.destroy();
 };
-
-
-// handle window default sizing
-require('sdk/simple-prefs').on('height', function() {
-  if (prefs.height < 260) prefs.height = 260;
-  else if (prefs.height > dimensions.height) prefs.height = dimensions.height;
-});
-
-require('sdk/simple-prefs').on('width', function() {
-  if (prefs.width < 400) prefs.width = 400;
-  else if (prefs.width > dimensions.width) prefs.width = dimensions.width;
-});
