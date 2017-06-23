@@ -9,11 +9,16 @@
   "content_scripts": [
     {
       "matches": ["*"],
-      "js": ["icon-overlay.js", "icon-overlay.css", "get-dimensions.js"]
+      "js": ["icon-overlay.js", "icon-overlay.css"]
     }
   ],
   "options_ui": {
-    "page": "options.html",
+    "page": "options/options.html",
     "browser_style": true
+  },
+  "config": {
+    "SOUNDCLOUD_CLIENT_ID": "c23df04aed9a788cd31fd5b100f22a7a",
+    "GA_TRACKING_ID": "UA-46704490-3",
+    "YOUTUBE_DATA_API_KEY": "AIzaSyCfy3cdlDMB9cEVwuHiGACnUjbc9G0gXTc"
   }
 }
