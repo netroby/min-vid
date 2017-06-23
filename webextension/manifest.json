@@ -2,7 +2,7 @@
   "name": "Min Vid",
   "version": "0.1.0",
   "manifest_version": 1,
-  "permissions": ["storage", "alarms"],
+  "permissions": ["storage", "alarms", "tabs"],
   "background": {
     "scripts": ["background.js"]
   },
