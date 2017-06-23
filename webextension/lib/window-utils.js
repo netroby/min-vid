@@ -3,7 +3,6 @@
 // added. In which case I may add a facade object(proxy?) to let them
 // act as they are below.
 
-
 const { Cu } = require('chrome');
 Cu.import('resource://gre/modules/Console.jsm');
 Cu.import('resource://gre/modules/Services.jsm');
