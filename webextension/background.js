@@ -4,28 +4,22 @@
  * http://mozilla.org/MPL/2.0/.
  */
 
-const _ = require('sdk/l10n').get;
-const store = require('sdk/simple-storage').storage;
-
 // set our unique identifier for metrics
 // (needs to be set before send-metrics-data is loaded)
-if (!store.clientUUID) {
-  store.clientUUID = require('./lib/get-random-id')();
+if (!browser.storage.local.clientUUID) {
+  browser.storage.local.set('clientUUID', require('./lib/get-random-id')());
 }
 
-if (!store.queue) store.queue = [];
-if (!store.history) store.history = [];
+if (!browser.storage.local.queue) browser.storage.local.queue = [];
+if (!browser.storage.local.history) browser.storage.local.history = [];
 
-
-const youtubeHelpers = require('./lib/youtube-helpers');
-const getVimeoUrl = require('./lib/get-vimeo-url');
-const getSoundcloudUrl = require('./lib/get-soundcloud-url');
-const launchVideo = require('./lib/launch-video');
-const sendMetricsData = require('./lib/send-metrics-data');
-const contextMenuHandlers = require('./lib/context-menu-handlers');
 const windowUtils = require('./lib/window-utils');
-
-const prefs = require('sdk/simple-prefs').prefs;
+const launchVideo = require('./lib/launch-video');
+const getVimeoUrl = require('./lib/get-vimeo-url');
+const youtubeHelpers = require('./lib/youtube-helpers');
+const sendMetricsData = require('./lib/send-metrics-data');
+const getSoundcloudUrl = require('./lib/get-soundcloud-url');
+const contextMenuHandlers = require('./lib/context-menu-handlers');
 
 exports.main = function() {
   contextMenuHandlers.init(windowUtils.getWindow());
