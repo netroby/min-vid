@@ -1,5 +1,3 @@
-module.exports = sendToAddon;
-
-function sendToAddon(obj) {
+export function sendToAddon(obj) {
   window.pendingCommands.push(JSON.stringify(obj));
 }

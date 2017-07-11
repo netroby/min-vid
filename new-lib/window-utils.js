@@ -1,29 +1,23 @@
-// browser.storage calls may need to be tweaked to handle setting and
-// unsetting. Particularly calls to JSON.parse may need to be
-// added. In which case I may add a facade object(proxy?) to let them
-// act as they are below.
+Components.Cu.import('resource://gre/modules/Console.jsm');
+Components.Cu.import('resource://gre/modules/Services.jsm');
 
+const prefs = require('sdk/simple-prefs').prefs;
 
+const { getMostRecentBrowserWindow } = require('sdk/window/utils');
+const { setTimeout, clearTimeout } = require('sdk/timers');
+const saveLocation = require('./save-location');
 
-// todo handle this probably on the bootstrap side
+XPCOMUtils.defineLazyModuleGetter(this, 'topify',
+                                  'chrome://min-vid-lib/content/topify.js');
+XPCOMUtils.defineLazyModuleGetter(this, 'DraggableElement',
+                                  'chrome://min-vid-lib/content/dragging-utils.js');
 
-const {classes: Cc, utils: Cu} = Components;
-Cu.import('resource://gre/modules/Console.jsm');
-Cu.import('resource://gre/modules/Services.jsm');
-const xhr = Cc['@mozilla.org/xmlextras/xmlhttprequest;1'],
-
-import { setTimeout, clearTimeout } from 'sdk/timers';
-import saveLocation from './save-location';;
-import topify from './topify';
-import DraggableElement from './dragging-utils';
-
-const storage = browser.storage;
 
 /* global Services */
 
 const DEFAULT_DIMENSIONS = {
-  height: storage.local.height,
-  width: storage.local.width,
+  height: prefs.height,
+  width: prefs.width,
   minimizedHeight: 100
 };
 
@@ -100,18 +94,11 @@ function closeWindow() {
 function create() {
   if (mvWindow) return mvWindow;
 
+  const window = getMostRecentBrowserWindow();
   const { x, y } = saveLocation.screenPosition;
+  const windowArgs = `left=${x},top=${y},chrome,dialog=no,width=${prefs.width},height=${prefs.height},titlebar=no`;
   // implicit assignment to mvWindow global
-  const windowArgs = {
-    url: extension.getURL('default.html'),
-    left: x,
-    top: y,
-    width: storage.local.width,
-    height: storage.local.height,
-    focused: true,
-    type: 'panel'
-  };
-  mvWindow = browser.windows.create(windowArgs);
+  mvWindow = window.open(self.data.url('default.html'), 'minvid', windowArgs);
   // once the window's ready, make it always topmost
   whenReady(() => { topify(mvWindow); });
   initCommunication();
@@ -170,8 +157,6 @@ function makeDraggable() {
 function destroy(isUnload) {
   closeWindow();
   if (isUnload) {
-
-    // windows.onRemoved
     Services.obs.removeObserver(onWindowClosed, 'xul-window-destroyed');
     Services.obs.removeObserver(closeRequested, 'browser-lastwindow-close-requested');
     saveLocation.destroy();
@@ -196,17 +181,13 @@ function maximize() {
   saveLocation.screenPosition = {x: mvWindow.screenX, y: mvWindow.screenY};
 }
 
-// todo: export this object somehow
-
-export {
+module.exports = {
   whenReady,
   create,
   destroy,
   getWindow,
   updateWindow,
-  // replaces panel.port.emit
   send,
-  // replaces panel.show
   show,
   maximize,
   isMinimized

@@ -1,10 +1,10 @@
-const React = require('react');
-const cn = require('classnames');
-const keyboardJS = require('keyboardjs');
-const ReactTooltip = require('react-tooltip');
-const sendToAddon = require('../client-lib/send-to-addon');
+import React from 'react';
+import cn from 'classnames';
+import keyboardJS from 'keyboardjs';
+import ReactTooltip from 'react-tooltip';
+import sendToAddon from '../client-lib/send-to-addon';
 
-module.exports = class PrevButton extends React.Component {
+export class PrevButton extends React.Component {
   constructor(props) {
     super(props);
     this.state = {historyIndex: 0};

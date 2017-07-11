@@ -1,4 +1,5 @@
-const events = require('events');
-const emitter = new events.EventEmitter;
+import { EventEmitter } from 'events';
+const emitter = new EventEmitter;
 
-module.exports = emitter;
+// todo: figure out how to export dis
+export emitter;

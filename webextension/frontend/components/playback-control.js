@@ -1,10 +1,10 @@
-const React = require('react');
-const cn = require('classnames');
-const debounce = require('lodash.debounce');
-const ReactTooltip = require('react-tooltip');
-const sendMetricsEvent = require('../client-lib/send-metrics-event');
+import React from 'react';
+import cn from 'classnames';
+import debounce from 'lodash.debounce';
+import ReactTooltip from 'react-tooltip';
+import sendMetricsEvent from '../client-lib/send-metrics-event';
 
-module.exports = class PlaybackControl extends React.Component {
+export class PlaybackControl extends React.Component {
   play() {
     if (this.props.exited) {
       return this.props.replay();

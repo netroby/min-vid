@@ -1,8 +1,8 @@
-const React = require('react');
-const cn = require('classnames');
-const ReactTooltip = require('react-tooltip');
+import React from 'react';
+import cn from 'classnames';
+import ReactTooltip from 'react-tooltip';
 
-module.exports = class NextButton extends React.Component {
+export class NextButton extends React.Component {
   render() {
     return (
         <div className={cn('next-wrapper', {hidden: (!this.props.hovered && !this.props.minimized) || (this.props.queue.length < 2) || this.props.confirm})}>

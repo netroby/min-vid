@@ -1,10 +1,10 @@
-const React = require('react');
-const cn = require('classnames');
-const keyboardJS = require('keyboardjs');
-const ReactTooltip = require('react-tooltip');
-const sendMetricsEvent = require('../client-lib/send-metrics-event');
+import React from 'react';
+import cn from 'classnames';
+import keyboardJS from 'keyboardjs';
+import ReactTooltip from 'react-tooltip';
+import sendMetricsEvent from '../client-lib/send-metrics-event';
 
-module.exports = class SoundControl extends React.Component {
+export class SoundControl extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
