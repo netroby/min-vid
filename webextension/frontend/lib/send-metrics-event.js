@@ -1,8 +1,6 @@
-const sendToAddon = require('./send-to-addon');
+import sendToAddon from './send-to-addon';
 
-module.exports = sendMetricsEvent;
-
-function sendMetricsEvent(object, method, domain) {
+export function sendMetricsEvent(object, method, domain) {
   sendToAddon({
     action: 'metrics-event',
     payload: {

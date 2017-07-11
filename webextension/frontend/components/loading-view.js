@@ -1,8 +1,8 @@
-const React = require('react');
-const cn = require('classnames');
-const GeneralControls = require('./general-controls');
+import React from 'react';
+import cn from 'classnames';
+import GeneralControls from './general-controls';
 
-class LoadingView extends React.Component {
+export class LoadingView extends React.Component {
   constructor(props) {
     super(props);
     this.state = {hovered: false};
@@ -32,5 +32,3 @@ class LoadingView extends React.Component {
     );
   }
 }
-
-module.exports = LoadingView;

@@ -1,10 +1,10 @@
-const React = require('react');
-const cn = require('classnames');
-const PlayerView = require('./player-view');
-const LoadingView = require('./loading-view');
-const ConfirmView = require('./confirm-view');
+import React from 'react';
+import cn from 'classnames';
+import PlayerView from './player-view';
+import LoadingView from './loading-view';
+import ConfirmView from './confirm-view';
 
-class AppView extends React.Component {
+export class AppView extends React.Component {
   render() {
     const confirmView = this.props.confirm ? (<ConfirmView {...this.props}/>) : null;
     const hideLoadingView = (this.props.queue.length && this.props.queue[0].error);
@@ -21,5 +21,3 @@ class AppView extends React.Component {
     );
   }
 }
-
-module.exports = AppView;

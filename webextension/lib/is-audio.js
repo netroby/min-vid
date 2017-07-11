@@ -1,4 +1,4 @@
-module.exports = function(src) {
+export default function isAudio(src) {
   const isSoundcloud = new RegExp('^(https?:)?//api.soundcloud.com\/tracks\/[0-9]+\/stream')
         .exec(src);
   const isAudio = new RegExp('^(https?:)?//*.+(.mp3|.opus|.weba|.ogg|.wav|.flac)')

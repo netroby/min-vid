@@ -1,9 +1,9 @@
-const React = require('react');
-const ReactDOM = require('react-dom');
-const deepAssign = require('deep-assign');
-const AppView = require('../components/app-view');
+import React from 'react';
+import ReactDOM from 'react-dom';
+import deepAssign from 'deep-assign';
+import AppView from '../components/app-view';
 
-module.exports = window.AppData = new Proxy({
+window.AppData = new Proxy({
   minimized: false,
   loaded: false,
   error: false, // revisit
@@ -42,3 +42,7 @@ function renderApp() {
   ReactDOM.render(React.createElement(AppView, window.AppData),
                   document.getElementById('container'));
 }
+
+// todo figure out how to export this object (if neccessary)
+const AppData = window.AppData;
+export AppData;

@@ -1,7 +1,7 @@
-const React = require('react');
-const cn = require('classnames');
+import React from 'react';
+import cn from 'classnames';
 
-module.exports = class Progress extends React.Component {
+export class Progress extends React.Component {
   render() {
     return (
         <div className={cn('progress', {peek: !this.props.hovered || this.props.minimized})}>

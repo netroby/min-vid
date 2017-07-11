@@ -3,9 +3,7 @@ const manifest = require('../package.json');
 
 const GA_URL = 'https://ssl.google-analytics.com/collect';
 
-module.exports = sendMetricsData;
-
-function sendMetricsData(o, win) {
+export function sendMetricsData(o, win) {
   // Note: window ref is optional, used to avoid circular refs with window-utils.js.
   win = win || require('./window-utils.js').getWindow();
 

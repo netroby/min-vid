@@ -1,8 +1,8 @@
-const debounce = require('lodash.debounce');
+import debounce from 'lodash.debounce';
 
 // initial render is triggered by appData being set in
 // `data/controls`. Listener is setup in `client-lib/app-data.js`
-require('./client-lib/app-data');
+import './client-lib/app-data';
 
 window.pendingCommands = [];
 
