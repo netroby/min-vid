@@ -13,17 +13,14 @@ if (!browser.storage.local.clientUUID) {
 if (!browser.storage.local.queue) browser.storage.local.queue = [];
 if (!browser.storage.local.history) browser.storage.local.history = [];
 
-const windowUtils = require('./lib/window-utils');
-const launchVideo = require('./lib/launch-video');
-const getVimeoUrl = require('./lib/get-vimeo-url');
-const youtubeHelpers = require('./lib/youtube-helpers');
-const sendMetricsData = require('./lib/send-metrics-data');
-const getSoundcloudUrl = require('./lib/get-soundcloud-url');
-const contextMenuHandlers = require('./lib/context-menu-handlers');
-
-exports.main = function() {
-  contextMenuHandlers.init(windowUtils.getWindow());
-};
+// import windowUtils from './lib/window-utils';
+import launchVideo from './lib/launch-video';
+// import getVimeoUrl from './lib/get-vimeo-url';
+// import youtubeHelpers from './lib/youtube-helpers';
+import sendMetricsData from './lib/send-metrics-data';
+// import getSoundcloudUrl from './lib/get-soundcloud-url';
+// import contextMenuHandlers from './lib/context-menu-handlers';
+//   contextMenuHandlers.init();
 
 browser.runtime.onMessage.addListener(onMessage);
 
@@ -34,11 +31,11 @@ function onMessage(opts) {
 
   if (title === 'launch') {
     if (opts.domain.indexOf('youtube.com') > -1) {
-      opts.getUrlFn = youtubeHelpers.getVideo;
+      // opts.getUrlFn = youtubeHelpers.getVideo;
     } else if (opts.domain.indexOf('vimeo.com') > -1) {
-      opts.getUrlFn = getVimeoUrl;
+      // opts.getUrlFn = getVimeoUrl;
     } else if (opts.domain.indexOf('soundcloud.com') > -1) {
-      opts.getUrlFn = getSoundcloudUrl;
+      // opts.getUrlFn = getSoundcloudUrl;
     }
 
     sendMetricsData({
@@ -51,8 +48,10 @@ function onMessage(opts) {
   } else if (title === 'metric') sendMetricsData(opts);
 }
 
-exports.onUnload = function() {
-  windowUtils.destroy(true);
-  contextMenuHandlers.destroy();
-  launchIconsMod.destroy();
-};
+import './message-router';
+
+// exports.onUnload = function() {
+//   windowUtils.destroy(true);
+//   contextMenuHandlers.destroy();
+//   launchIconsMod.destroy();
+// };

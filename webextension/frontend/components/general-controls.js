@@ -1,11 +1,11 @@
-const React = require('react');
-const cn = require('classnames');
-const ReactTooltip = require('react-tooltip');
-const Close = require('./close-control');
-const SendToTab = require('./send-to-tab')
-const SizeControl = require('./size-control');
+import React from 'react';
+import cn from 'classnames';
+import ReactTooltip from 'react-tooltip';
+import Close from './close-control';
+import SendToTab from './send-to-tab';
+import SizeControl from './size-control';
 
-module.exports = class GeneralControls extends React.Component {
+export class GeneralControls extends React.Component {
   render() {
     return (
         <div className={cn('controls drag', {hidden: !this.props.hovered && !this.props.minimized, minimized: this.props.minimized})}>

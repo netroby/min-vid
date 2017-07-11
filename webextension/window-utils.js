@@ -1,31 +1,8 @@
-// browser.storage calls may need to be tweaked to handle setting and
-// unsetting. Particularly calls to JSON.parse may need to be
-// added. In which case I may add a facade object(proxy?) to let them
-// act as they are below.
-
-
-
-// todo handle this probably on the bootstrap side
-
-const {classes: Cc, utils: Cu} = Components;
+import { Cu } from 'chrome';
 Cu.import('resource://gre/modules/Console.jsm');
 Cu.import('resource://gre/modules/Services.jsm');
-const xhr = Cc['@mozilla.org/xmlextras/xmlhttprequest;1'],
-
-import { setTimeout, clearTimeout } from 'sdk/timers';
-import saveLocation from './save-location';;
-import topify from './topify';
-import DraggableElement from './dragging-utils';
-
-const storage = browser.storage;
 
 /* global Services */
-
-const DEFAULT_DIMENSIONS = {
-  height: storage.local.height,
-  width: storage.local.width,
-  minimizedHeight: 100
-};
 
 // TODO: if mvWindow changes, we need to destroy and create the player.
 // This must be why we get those dead object errors. Note that mvWindow
@@ -196,18 +173,4 @@ function maximize() {
   saveLocation.screenPosition = {x: mvWindow.screenX, y: mvWindow.screenY};
 }
 
-// todo: export this object somehow
 
-export {
-  whenReady,
-  create,
-  destroy,
-  getWindow,
-  updateWindow,
-  // replaces panel.port.emit
-  send,
-  // replaces panel.show
-  show,
-  maximize,
-  isMinimized
-};

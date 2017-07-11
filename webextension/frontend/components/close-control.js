@@ -1,14 +1,14 @@
-const React = require('react');
-const ReactTooltip = require('react-tooltip');
-const sendMetricsEvent = require('../client-lib/send-metrics-event');
-const sendToAddon = require('../client-lib/send-to-addon');
+import React from 'react';
+import ReactTooltip from 'react-tooltip';
+import sendMetricsEvent from '../client-lib/send-metrics-event';
+import sendToAddon from '../client-lib/send-to-addon';
 
 function getView() {
   if (window.AppData.error) return 'error_view';
   return window.AppData.loaded ? 'player_view' : 'loading_view';
 }
 
-module.exports = class Close extends React.Component {
+export class Close extends React.Component {
   close() {
     sendMetricsEvent(getView(), 'close');
     sendToAddon({action: 'close'});

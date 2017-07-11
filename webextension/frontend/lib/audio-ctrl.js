@@ -1,7 +1,7 @@
-const AudioSource = require('audiosource');
-const createWaveform = require('gl-waveform');
+import AudioSource from 'audiosource';
+import createWaveform from 'gl-waveform';
 
-module.exports = class AudioCtrl {
+export class AudioCtrl {
   constructor(options) {
     this.prevVolume = 0.5;
     this.onProgress = options.onProgress;

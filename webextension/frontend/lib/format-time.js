@@ -1,4 +1,4 @@
-module.exports = function(seconds) {
+export function(seconds) {
   const secondsInDay = 24 * 60 * 60;
   const days = Math.floor(seconds / secondsInDay);
   seconds = seconds % secondsInDay;

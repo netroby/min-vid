@@ -2,28 +2,26 @@
 // querystring
 // prefs keyShortcutsenabled
 
+// import qs from 'sdk/querystring';
+import getVideoId from 'get-video-id';
+import isAudioFile from './is-audio';
+import windowUtils from './window-utils';
+import youtubeHelpers from './youtube-helpers';
+import sendMetricsData from './send-metrics-data';
+import getLocaleStrings from './get-locale-strings';
 
-const tabs = require('sdk/tabs');
-const qs = require('sdk/querystring');
+function qs() {
+  console.error('need to find a good query string parsing replacement, there should be a browser api for this');
+}
 
 const storage = browser.storage.local;
-
-const getVideoId = require('get-video-id');
-
-const isAudioFile = require('./is-audio');
-const windowUtils = require('./window-utils');
-const youtubeHelpers = require('./youtube-helpers');
-const sendMetricsData = require('./send-metrics-data');
-const getLocaleStrings = require('./get-locale-strings');
-
-module.exports = launchVideo;
 
 function isAudio(url) {
   return (isAudioFile(url) || new RegExp('^(https?:)?//soundcloud.com\/').exec(url));
 }
 
 // Pass in a video URL as opts.src or pass in a video URL lookup function as opts.getUrlFn
-function launchVideo(opts) {
+export function launchVideo(opts) {
   // UpdateWindow might create a new panel, so do the remaining launch work
   // asynchronously.
   windowUtils.updateWindow();
@@ -45,7 +43,7 @@ function launchVideo(opts) {
       height: storage.height,
       videoId: getVideoId(opts.url) ? getVideoId(opts.url).id : '',
       strings: getLocaleStrings(opts.domain, isAudio(opts.url)),
-      tabId: tabs.activeTab.id,
+      tabId: browser.tabs.TAB.id,
       launchUrl: opts.url,
       currentTime: 0,
       keyShortcutsEnabled: prefs['keyShortcutsEnabled'],

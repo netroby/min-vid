@@ -1,24 +1,24 @@
-const React = require('react');
-const cn = require('classnames');
-const keyboardJS = require('keyboardjs');
-const debounce = require('lodash.debounce');
-const ReactPlayer = require('react-player');
+import React from 'react';
+import cn from 'classnames';
+import keyboardJS from 'keyboardjs';
+import debounce from 'lodash.debounce';
+import ReactPlayer from 'react-player';
 
-const AudioCtrl = require('../client-lib/audio-ctrl');
-const formatTime = require('../client-lib/format-time');
-const sendToAddon = require('../client-lib/send-to-addon');
-const sendMetricsEvent = require('../client-lib/send-metrics-event');
+import AudioCtrl from '../client-lib/audio-ctrl';
+import formatTime from '../client-lib/format-time';
+import sendToAddon from '../client-lib/send-to-addon';
+import sendMetricsEvent from '../client-lib/send-metrics-event';
 
-const Queues = require('./queues');
-const ErrorView = require('./error-view');
-const ReplayView = require('./replay-view');
-const PrevTrackBtn = require('./prev-button');
-const NextTrackBtn = require('./next-button');
-const PlayerControls = require('./player-controls');
-const GeneralControls = require('./general-controls');
-const MinimizedControls = require('./minimized-controls');
+import Queues from './queues';
+import ErrorView from './error-view';
+import ReplayView from './replay-view';
+import PrevTrackBtn from './prev-button';
+import NextTrackBtn from './next-button';
+import PlayerControls from './player-controls';
+import GeneralControls from './general-controls';
+import MinimizedControls from './minimized-controls';
 
-module.exports = class Player extends React.Component {
+export class Player extends React.Component {
   constructor(props) {
     super(props);
     this.state = {

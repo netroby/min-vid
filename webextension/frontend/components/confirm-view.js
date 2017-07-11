@@ -1,8 +1,8 @@
-const React = require('react');
-const sendToAddon = require('../client-lib/send-to-addon');
-const sendMetricsEvent = require('../client-lib/send-metrics-event');
+import React from 'react';
+import sendToAddon from '../client-lib/send-to-addon';
+import sendMetricsEvent from '../client-lib/send-metrics-event';
 
-class ConfirmView extends React.Component {
+export class ConfirmView extends React.Component {
   cancel(ev) {
     ev.preventDefault();
     ev.stopPropagation();
@@ -53,5 +53,3 @@ class ConfirmView extends React.Component {
     );
   }
 }
-
-module.exports = ConfirmView;

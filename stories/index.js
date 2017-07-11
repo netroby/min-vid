@@ -1,9 +1,8 @@
 import React from 'react';
-import { storiesOf, action, linkTo } from '@kadira/storybook';
+import { storiesOf } from '@kadira/storybook';
 import { host } from 'storybook-host';
 
 import App from '../components/app-view';
-import Player from '../components/player-view';
 import '../data/panel.css';
 
 window.pendingCommands = [];
