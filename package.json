@@ -25,11 +25,11 @@
     "storybook": "start-storybook -p 9001 -c .storybook",
     "start": "npm run dev",
     "watch": "jpm watchpost --post-url http://localhost:8888",
+    "copy:locales": "node ./bin/locales",
     "dev": "npm run locales && npm run watch-script & npm run watch & http-server -c-1 --cors",
     "prepackage": "npm run locales && npm run lint",
     "package": "npm run build-script && jpm xpi && npm run mv-xpi",
-    "postpackage": "addons-linter addon.xpi -o text",
-    "locales": "node ./bin/locales",
+    "postpackage": "addons-linter dist/min-vid-1.0.10.xpi -o text",
     "mv-xpi": "mv min-vid.xpi addon.xpi",
     "prepush": "npm run package",
     "deploy": "deploy-txp"
@@ -50,11 +50,18 @@
     "cross-env": "5.0.0",
     "deploy-txp": "1.0.7",
     "eslint": "3.19.0",
+    "eslint-plugin-import": "2.7.0",
+    "eslint-plugin-jsx-a11y": "6.0.2",
     "eslint-plugin-mozilla": "0.3.2",
     "eslint-plugin-react": "7.0.1",
     "http-server": "0.10.0",
     "husky": "0.13.4",
     "pontoon-to-webext": "1.0.2",
     "storybook-host": "2.0.0-alpha.1"
+  },
+  "dependencies": {
+    "babel-eslint": "7.2.3",
+    "eslint-config-airbnb": "15.0.2",
+    "pontoon-to-webext": "1.0.2"
   }
 }

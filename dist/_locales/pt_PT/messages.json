@@ -1,0 +1,110 @@
+{
+  "tooltip_play": {
+    "message": "Reproduzir"
+  },
+  "tooltip_pause": {
+    "message": "Pausar"
+  },
+  "tooltip_mute": {
+    "message": "Tirar som"
+  },
+  "tooltip_unmute": {
+    "message": "Repor som"
+  },
+  "tooltip_next": {
+    "message": "Seguinte"
+  },
+  "tooltip_previous": {
+    "message": "Anterior"
+  },
+  "tooltip_send_to_tab": {
+    "message": "Enviar para separador"
+  },
+  "tooltip_minimize": {
+    "message": "Minimizar"
+  },
+  "tooltip_maximize": {
+    "message": "Maximizar"
+  },
+  "tooltip_close": {
+    "message": "Fechar"
+  },
+  "tooltip_switch_visual": {
+    "message": "Clicar para trocar visualização"
+  },
+  "tooltip_open_queue": {
+    "message": "Abrir fila"
+  },
+  "tooltip_close_queue": {
+    "message": "Fechar fila"
+  },
+  "media_type_audio": {
+    "message": "áudio"
+  },
+  "media_type_video": {
+    "message": "vídeo"
+  },
+  "play_now": {
+    "message": "Reproduzir agora"
+  },
+  "add_to_queue": {
+    "message": "Adicionar à fila"
+  },
+  "clear": {
+    "message": "Limpar"
+  },
+  "history": {
+    "message": "Histórico"
+  },
+  "play_queue": {
+    "message": "Fila de reprod."
+  },
+  "item_added_notification": {
+    "message": "Item adicionado à fila"
+  },
+  "end_of_queue": {
+    "message": "Não existem mais itens na fila"
+  },
+  "error_msg": {
+    "message": "Algo correu mal com este vídeo. Tente novamente mais tarde."
+  },
+  "error_link": {
+    "message": "Abrir em novo separador"
+  },
+  "loading_view_msg": {
+    "message": "A carregar %s de %s"
+  },
+  "confirm_msg": {
+    "message": "O que gostaria de fazer?"
+  },
+  "add_confirm_msg": {
+    "message": "Adicionar"
+  },
+  "play_confirm_msg": {
+    "message": "Reproduzir"
+  },
+  "error_sc_limit": {
+    "message": "Chegou ao limite de transmissões do Soundcloud para hoje, tente novamente amanhã."
+  },
+  "error_sc_connection": {
+    "message": "Não foi possível ligar ao Soundcloud. Tente novamente mais tarde."
+  },
+  "error_sc_not_track": {
+    "message": "A ligação que enviou do Soundcloud não é uma faixa, tente enviar uma faixa de áudio."
+  },
+  "error_sc_not_streamable": {
+    "message": "A ligação que enviou do Soundcloud não é transmissível, tente outra faixa."
+  },
+  "error_sc_restricted": {
+    "message": "O publicador desta faixa restringiu o acesso a terceiros, tente outra faixa."
+  },
+  "error_vimeo_connection": {
+    "message": "Não foi possível ligar ao Vimeo. Tente novamente mais tarde."
+  },
+  "error_youtube_not_found": {
+    "message": "Vídeo não encontrado. O vídeo que pediu ou foi removido ou marcado como privado."
+  },
+  "error_youtube_not_allowed": {
+    "message": "O vídeo foi marcado como não-embutido pelo proprietário. Por favor tente outro vídeo ou contacte o publicador."
+  }
+}

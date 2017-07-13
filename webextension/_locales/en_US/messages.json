@@ -1,0 +1,120 @@
+{
+  "tooltip_play": {
+    "message": "Play"
+  },
+  "tooltip_pause": {
+    "message": "Pause"
+  },
+  "tooltip_mute": {
+    "message": "Mute"
+  },
+  "tooltip_unmute": {
+    "message": "Unmute"
+  },
+  "tooltip_next": {
+    "message": "Next"
+  },
+  "tooltip_previous": {
+    "message": "Previous"
+  },
+  "tooltip_send_to_tab": {
+    "message": "Send to tab"
+  },
+  "tooltip_minimize": {
+    "message": "Minimize"
+  },
+  "tooltip_maximize": {
+    "message": "Maximize"
+  },
+  "tooltip_close": {
+    "message": "Close"
+  },
+  "tooltip_switch_visual": {
+    "message": "Click to switch visualization"
+  },
+  "tooltip_open_queue": {
+    "message": "Open Queue"
+  },
+  "tooltip_close_queue": {
+    "message": "Close Queue"
+  },
+  "media_type_audio": {
+    "message": "audio"
+  },
+  "media_type_video": {
+    "message": "video"
+  },
+  "play_now": {
+    "message": "Play Now"
+  },
+  "add_to_queue": {
+    "message": "Add to queue"
+  },
+  "clear": {
+    "message": "Clear"
+  },
+  "history": {
+    "message": "History"
+  },
+  "play_queue": {
+    "message": "Play Queue"
+  },
+  "item_added_notification": {
+    "message": "Item added to queue"
+  },
+  "end_of_queue": {
+    "message": "There are no more items in the queue"
+  },
+  "error_msg": {
+    "message": "Something's gone wrong with this video. Try again later."
+  },
+  "error_link": {
+    "message": "Open in new tab"
+  },
+  "loading_view_msg": {
+    "message": "Loading $MEDIA_TYPE from $DOMAIN",
+    "placeholders": {
+      "MEDIA_TYPE" : {
+        "content" : "$1",
+        "example" : "audio"
+      },
+      "DOMAIN": {
+        "content" : "$2",
+        "example" : "youtube.com"
+      }
+    }
+  },
+  "confirm_msg": {
+    "message": "What would you like to do?"
+  },
+  "add_confirm_msg": {
+    "message": "Add"
+  },
+  "play_confirm_msg": {
+    "message": "Play"
+  },
+  "error_sc_limit": {
+    "message": "You have reached the limit for Soundcloud streams for today, try again tomorrow."
+  },
+  "error_sc_connection": {
+    "message": "Could not connect to Soundcloud. Try again later."
+  },
+  "error_sc_not_track": {
+    "message": "The link you have sent from Soundcloud is not a track, try sending an audio track."
+  },
+  "error_sc_not_streamable": {
+    "message": "The track you have sent from Soundcloud is not streamable, try another track."
+  },
+  "error_sc_restricted": {
+    "message": "The publisher of this track has restricted access to third parties, try another track."
+  },
+  "error_vimeo_connection": {
+    "message": "Could not connect to Vimeo. Try again later."
+  },
+  "error_youtube_not_found": {
+    "message": "Video not found. The video you've requested has either been removed or marked private."
+  },
+  "error_youtube_not_allowed": {
+    "message": "This video has been marked as unembeddable by the owner. Please try another video or contact the publisher."
+  }
+}

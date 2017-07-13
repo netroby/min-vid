@@ -1,0 +1,110 @@
+{
+  "tooltip_play": {
+    "message": "Přehrát"
+  },
+  "tooltip_pause": {
+    "message": "Pozastavit"
+  },
+  "tooltip_mute": {
+    "message": "Ztlumit"
+  },
+  "tooltip_unmute": {
+    "message": "Zapnout zvuk"
+  },
+  "tooltip_next": {
+    "message": "Další"
+  },
+  "tooltip_previous": {
+    "message": "Předchozí"
+  },
+  "tooltip_send_to_tab": {
+    "message": "Odeslat do panelu"
+  },
+  "tooltip_minimize": {
+    "message": "Minimalizovat"
+  },
+  "tooltip_maximize": {
+    "message": "Maximalizovat"
+  },
+  "tooltip_close": {
+    "message": "Zavřít"
+  },
+  "tooltip_switch_visual": {
+    "message": "Klepněte pro přepnutí vizualizace"
+  },
+  "tooltip_open_queue": {
+    "message": "Otevřít frontu"
+  },
+  "tooltip_close_queue": {
+    "message": "Zavřít frontu"
+  },
+  "media_type_audio": {
+    "message": "zvuk"
+  },
+  "media_type_video": {
+    "message": "video"
+  },
+  "play_now": {
+    "message": "Přehrát"
+  },
+  "add_to_queue": {
+    "message": "Přidat do fronty"
+  },
+  "clear": {
+    "message": "Vymazat"
+  },
+  "history": {
+    "message": "Historie"
+  },
+  "play_queue": {
+    "message": "Fronta přehrávání"
+  },
+  "item_added_notification": {
+    "message": "Položka byla přidána do fronty"
+  },
+  "end_of_queue": {
+    "message": "Ve frontě už nic není"
+  },
+  "error_msg": {
+    "message": "Při přehrávání tohoto videa nastala chyba. Zkuste to později."
+  },
+  "error_link": {
+    "message": "Otevřít v novém panelu"
+  },
+  "loading_view_msg": {
+    "message": "Načítá se %s z %s"
+  },
+  "confirm_msg": {
+    "message": "Co byste rádi udělali?"
+  },
+  "add_confirm_msg": {
+    "message": "Přidat"
+  },
+  "play_confirm_msg": {
+    "message": "Přehrát"
+  },
+  "error_sc_limit": {
+    "message": "Dosáhli jste denního limitu počtu streamů služby Soundcloud. Zkuste to znovu zítra."
+  },
+  "error_sc_connection": {
+    "message": "Nepodařilo se spojit se službou Soundcloud. Zkuste to znovu později."
+  },
+  "error_sc_not_track": {
+    "message": "Odkaz, který jste ze Soundcloud poslali, není stopou. Zkuste poslat hudební stopu."
+  },
+  "error_sc_not_streamable": {
+    "message": "Stopu, kterou jste ze Soundcloud poslali, nelze streamovat. Zkuste poslat jinou stopu."
+  },
+  "error_sc_restricted": {
+    "message": "Vydavatel této stopy zakázal přístup třetím stranám, zkuste jinou stopu."
+  },
+  "error_vimeo_connection": {
+    "message": "Nepodařilo se spojit se službou Vimeo. Zkuste to znovu později."
+  },
+  "error_youtube_not_found": {
+    "message": "Video nebylo nalezeno. Požadované video bylo odstraněno nebo označeno jako soukromé."
+  },
+  "error_youtube_not_allowed": {
+    "message": "U tohoto videa jeho autor zakázal vkládání. Zkuste prosím jiné video nebo kontaktujte jeho autora."
+  }
+}

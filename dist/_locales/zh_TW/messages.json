@@ -1,0 +1,110 @@
+{
+  "tooltip_play": {
+    "message": "播放"
+  },
+  "tooltip_pause": {
+    "message": "暫停"
+  },
+  "tooltip_mute": {
+    "message": "靜音"
+  },
+  "tooltip_unmute": {
+    "message": "取消靜音"
+  },
+  "tooltip_next": {
+    "message": "下一個"
+  },
+  "tooltip_previous": {
+    "message": "上一個"
+  },
+  "tooltip_send_to_tab": {
+    "message": "傳送到分頁"
+  },
+  "tooltip_minimize": {
+    "message": "最小化"
+  },
+  "tooltip_maximize": {
+    "message": "最大化"
+  },
+  "tooltip_close": {
+    "message": "關閉"
+  },
+  "tooltip_switch_visual": {
+    "message": "點擊切換視覺化"
+  },
+  "tooltip_open_queue": {
+    "message": "開啟播放佇列"
+  },
+  "tooltip_close_queue": {
+    "message": "關閉播放佇列"
+  },
+  "media_type_audio": {
+    "message": "音訊"
+  },
+  "media_type_video": {
+    "message": "視訊"
+  },
+  "play_now": {
+    "message": "立刻播放"
+  },
+  "add_to_queue": {
+    "message": "新增至播放佇列"
+  },
+  "clear": {
+    "message": "清除"
+  },
+  "history": {
+    "message": "播放紀錄"
+  },
+  "play_queue": {
+    "message": "播放佇列"
+  },
+  "item_added_notification": {
+    "message": "已將項目加入播放佇列"
+  },
+  "end_of_queue": {
+    "message": "播放佇列中沒有更多項目"
+  },
+  "error_msg": {
+    "message": "這部影片有點怪怪的，請稍候再試著播放。"
+  },
+  "error_link": {
+    "message": "用新分頁開啟"
+  },
+  "loading_view_msg": {
+    "message": "正在從 %2$s 載入 %1$s"
+  },
+  "confirm_msg": {
+    "message": "您想要做什麼？"
+  },
+  "add_confirm_msg": {
+    "message": "新增"
+  },
+  "play_confirm_msg": {
+    "message": "播放"
+  },
+  "error_sc_limit": {
+    "message": "已達 Soundcloud 今天可播放的串流數量，請明天再試一次。"
+  },
+  "error_sc_connection": {
+    "message": "無法連線至 Soundcloud，請稍候再試。"
+  },
+  "error_sc_not_track": {
+    "message": "您從 Soundcloud 傳送的鏈結不是音訊軌，請傳送音訊軌。"
+  },
+  "error_sc_not_streamable": {
+    "message": "您從 Soundcloud 傳送的音軌無法串流，請傳送其他音訊軌。"
+  },
+  "error_sc_restricted": {
+    "message": "此音軌的發佈者已限制第三方存取，請播放其他音軌。"
+  },
+  "error_vimeo_connection": {
+    "message": "無法連線至 Vimeo，請稍候再試。"
+  },
+  "error_youtube_not_found": {
+    "message": "找不到影片。您開啟的影片可能已被移除，或設為私人影片。"
+  },
+  "error_youtube_not_allowed": {
+    "message": "影片擁有者已將影片設為不可嵌入。請嘗試播放其他影片，或聯絡發布者。"
+  }
+}

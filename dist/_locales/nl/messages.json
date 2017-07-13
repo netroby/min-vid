@@ -1,0 +1,110 @@
+{
+  "tooltip_play": {
+    "message": "Afspelen"
+  },
+  "tooltip_pause": {
+    "message": "Pauzeren"
+  },
+  "tooltip_mute": {
+    "message": "Dempen"
+  },
+  "tooltip_unmute": {
+    "message": "Dempen opheffen"
+  },
+  "tooltip_next": {
+    "message": "Volgende"
+  },
+  "tooltip_previous": {
+    "message": "Vorige"
+  },
+  "tooltip_send_to_tab": {
+    "message": "Verzenden naar tabblad"
+  },
+  "tooltip_minimize": {
+    "message": "Minimaliseren"
+  },
+  "tooltip_maximize": {
+    "message": "Maximaliseren"
+  },
+  "tooltip_close": {
+    "message": "Sluiten"
+  },
+  "tooltip_switch_visual": {
+    "message": "Klik om visualisatie om te schakelen"
+  },
+  "tooltip_open_queue": {
+    "message": "Wachtrij openen"
+  },
+  "tooltip_close_queue": {
+    "message": "Wachtrij sluiten"
+  },
+  "media_type_audio": {
+    "message": "Audio"
+  },
+  "media_type_video": {
+    "message": "Video"
+  },
+  "play_now": {
+    "message": "Nu afspelen"
+  },
+  "add_to_queue": {
+    "message": "Toevoegen aan wachtrij"
+  },
+  "clear": {
+    "message": "Wissen"
+  },
+  "history": {
+    "message": "Geschiedenis"
+  },
+  "play_queue": {
+    "message": "Afspeelwachtrij"
+  },
+  "item_added_notification": {
+    "message": "Item aan wachtrij toegevoegd"
+  },
+  "end_of_queue": {
+    "message": "Er zijn geen items meer in de wachtrij"
+  },
+  "error_msg": {
+    "message": "Er is iets misgegaan met deze video. Probeer het later opnieuw."
+  },
+  "error_link": {
+    "message": "Openen in nieuw tabblad"
+  },
+  "loading_view_msg": {
+    "message": "%s laden vanaf %s"
+  },
+  "confirm_msg": {
+    "message": "Wat wilt u doen?"
+  },
+  "add_confirm_msg": {
+    "message": "Toevoegen"
+  },
+  "play_confirm_msg": {
+    "message": "Afspelen"
+  },
+  "error_sc_limit": {
+    "message": "U hebt de limiet voor Soundcloud-streams voor vandaag bereikt; probeer het morgen opnieuw."
+  },
+  "error_sc_connection": {
+    "message": "Kon geen verbinding maken met Soundcloud. Probeer het later opnieuw."
+  },
+  "error_sc_not_track": {
+    "message": "De koppeling die u vanaf Soundcloud hebt verzonden, is geen track; probeer een audiotrack te verzenden."
+  },
+  "error_sc_not_streamable": {
+    "message": "De track die u vanaf Soundcloud hebt verzonden, kan niet worden gestreamd; probeer een andere track."
+  },
+  "error_sc_restricted": {
+    "message": "De uitgever van deze track heeft toegang voor derden beperkt; probeer een andere track."
+  },
+  "error_vimeo_connection": {
+    "message": "Kon geen verbinding maken met Vimeo. Probeer het later opnieuw."
+  },
+  "error_youtube_not_found": {
+    "message": "Video is niet gevonden. De video die u hebt opgevraagd, is verwijderd of als privé gemarkeerd."
+  },
+  "error_youtube_not_allowed": {
+    "message": "Deze video is door de eigenaar gemarkeerd als niet invoegbaar. Probeer een andere video, of neem contact op met de uitgever."
+  }
+}

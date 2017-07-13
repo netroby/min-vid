@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 4);
+/******/ 	return __webpack_require__(__webpack_require__.s = 3);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -73,19 +73,199 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.sendMetricsData = sendMetricsData;
-var storage = browser.storage.local;
-var manifest = __webpack_require__(9);
 
+var _querystring = __webpack_require__(1);
+
+var _iso8601Duration = __webpack_require__(10);
+
+var apiKey = browser.runtime.getManifest().config['YOUTUBE_DATA_API_KEY'];
+
+exports.default = {
+  getVideo: getVideo,
+  getPlaylist: getPlaylist,
+  getPlaylistMeta: getPlaylistMeta
+};
+
+
+function getVideo(opts, cb) {
+  var query = (0, _querystring.stringify)({
+    key: apiKey,
+    id: opts.videoId,
+    part: 'snippet,contentDetails,status'
+  });
+
+  var url = 'https://www.googleapis.com/youtube/v3/videos?' + query;
+
+  fetch(url, { method: 'GET',
+    mode: 'cors',
+    cache: 'default' }).then(function (res) {
+    return res.json().then(function (json) {
+      var result = json.items;
+      var item = {
+        cc: opts.cc,
+        videoId: opts.videoId,
+        url: 'https://youtube.com/watch?v=' + opts.videoId,
+        domain: 'youtube.com',
+        currentTime: opts.time || 0,
+        error: false,
+        title: result.length ? result[0].snippet.title : '',
+        duration: result.length ? (0, _iso8601Duration.toSeconds)((0, _iso8601Duration.parse)(result[0].contentDetails.duration)) : 0,
+        preview: 'https://img.youtube.com/vi/' + opts.videoId + '/0.jpg',
+        live: result.length ? Boolean(result[0].snippet.liveBroadcastContent === 'live') : false
+      };
+
+      var url = 'https://www.youtube.com/get_video_info?video_id=' + opts.videoId;
+      fetch(url, { method: 'GET',
+        mode: 'cors',
+        cache: 'default' }).then(function (res) {
+        var result = (0, _querystring.parse)(res.text);
+        if (result.status === 'fail') {
+          if (result.reason.indexOf('restricted')) item.error = 'error_youtube_not_allowed';else item.error = 'error_youtube_not_found';
+        }
+
+        cb(item);
+      });
+    });
+  });
+}
+
+function getPlaylistMeta(opts, cb) {
+  var query = (0, _querystring.stringify)({
+    key: apiKey,
+    part: 'snippet',
+    id: opts.playlistId
+  });
+
+  var url = 'https://www.googleapis.com/youtube/v3/playlists?' + query;
+  fetch(url, { method: 'GET',
+    mode: 'cors',
+    cache: 'default' }).then(function (res) {
+    return res.json().then(function (json) {
+      var result = json.items[0].snippet;
+
+      query = (0, _querystring.parse)(query);
+      query.id = opts.videoId;
+      query = (0, _querystring.stringify)(query);
+
+      var url = 'https://www.googleapis.com/youtube/v3/videos?' + query;
+      fetch(url, { method: 'GET',
+        mode: 'cors',
+        cache: 'default' }).then(function (res) {
+        return res.json().then(function (json) {
+          cb(Object.assign(opts, {
+            playlistTitle: result.title,
+            videoTitle: json.items[0].snippet.title
+          }));
+        });
+      });
+    });
+  });
+}
+
+function getPlaylist(opts, cb, passedPlaylist) {
+  var query = (0, _querystring.stringify)({
+    key: apiKey,
+    part: 'snippet',
+    playlistId: opts.playlistId,
+    maxResults: 50,
+    pageToken: opts.pageToken || ''
+  });
+
+  var url = 'https://www.googleapis.com/youtube/v3/playlistItems?' + query;
+  fetch(url, { method: 'GET',
+    mode: 'cors',
+    cache: 'default' }).then(function (res) {
+    return res.json().then(function (json) {
+      var result = json;
+      if (result.pageInfo.totalResults <= 50) {
+        Promise.all(result.items.map(function (i) {
+          return getVideoDetails(i.snippet.resourceId.videoId, i.snippet.position);
+        })).then(function (playlist) {
+          return cb(playlist.sort(function (a, b) {
+            return a.position - b.position;
+          }));
+        });
+      } else {
+        var shouldFetch = result.items[result.items.length - 1].snippet.position < result.pageInfo.totalResults - 1;
+        Promise.all(result.items.map(function (i) {
+          return getVideoDetails(i.snippet.resourceId.videoId, i.snippet.position);
+        })).then(function (playlist) {
+          return passedPlaylist ? passedPlaylist.concat(playlist) : playlist;
+        }).then(function (playlist) {
+          return shouldFetch ? getPlaylist(Object.assign((0, _querystring.parse)(query), { pageToken: result.nextPageToken }), cb, playlist) : cb(playlist);
+        });
+      }
+    });
+  });
+}
+
+function getVideoDetails(videoId, position) {
+  return new Promise(function (resolve) {
+    getVideo({
+      time: 0,
+      videoId: videoId
+    }, function (item) {
+      item.position = position;
+      resolve(item);
+    });
+  });
+}
+
+/***/ }),
+/* 1 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.parse = parse;
+exports.stringify = stringify;
+
+
+function parse(qs) {
+  var result = {};
+  var idx = qs.indexOf('?');
+  qs.substr(idx + 1).split('&').map(function (a) {
+    return a.split('=');
+  }).map(function (a) {
+    return result[a[0]] = encodeURI(a[1]);
+  });
+  return result;
+}
+
+function stringify(params) {
+  return '?' + Object.keys(params).map(function (k) {
+    return k + '=' + params[k];
+  }).join('&');
+}
+
+/***/ }),
+/* 2 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = sendMetricsData;
+var storage = browser.storage.local;
+var version = browser.runtime.getManifest().version;
+var trackingId = browser.runtime.getManifest().config['GA_TRACKING_ID'];
 var GA_URL = 'https://ssl.google-analytics.com/collect';
 
 function sendMetricsData(o, win) {
   // Note: window ref is optional, used to avoid circular refs with window-utils.js.
-  win = win || __webpack_require__(1).getWindow();
+  win = win; //  || require('./window-utils.js').getWindow();
 
   if (!win || win.incognito) return;
 
-  var coords = win.document.documentElement.getBoundingClientRect();
+  // TODO: WINDOW UTILS GET COORDS will replace this
+  // const coords = win.document.documentElement.getBoundingClientRect();
 
   // NOTE: this packet follows a predefined data format and cannot be changed
   //       without notifying the data team. See docs/metrics.md for more.
@@ -93,16 +273,16 @@ function sendMetricsData(o, win) {
     v: 1,
     aip: 1, // anonymize user IP addresses (#24 mozilla/testpilot-metrics)
     an: browser.runtime.id,
-    av: manifest.version,
-    tid: manifest.config['GA_TRACKING_ID'],
+    av: version,
+    tid: trackingId,
     cid: storage.clientUUID,
     t: 'event',
     ec: o.category,
     ea: o.method,
-    cd2: coords.left, // video_x
-    cd3: coords.top, // video_y
-    cd4: coords.width,
-    cd5: coords.height,
+    // cd2: coords.left, // video_x
+    // cd3: coords.top, // video_y
+    // cd4: coords.width,
+    // cd5: coords.height,
     cd6: o.domain,
     el: o.object
   }).map(function (item) {
@@ -129,718 +309,71 @@ function sendMetricsData(o, win) {
 }
 
 /***/ }),
-/* 1 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.isMinimized = exports.maximize = exports.show = exports.send = exports.updateWindow = exports.getWindow = exports.destroy = exports.create = exports.whenReady = undefined;
-
-var _chrome = __webpack_require__(!(function webpackMissingModule() { var e = new Error("Cannot find module \"chrome\""); e.code = 'MODULE_NOT_FOUND'; throw e; }()));
-
-var _timers = __webpack_require__(!(function webpackMissingModule() { var e = new Error("Cannot find module \"sdk/timers\""); e.code = 'MODULE_NOT_FOUND'; throw e; }()));
-
-var _saveLocation = __webpack_require__(!(function webpackMissingModule() { var e = new Error("Cannot find module \"./save-location\""); e.code = 'MODULE_NOT_FOUND'; throw e; }()));
-
-var _saveLocation2 = _interopRequireDefault(_saveLocation);
-
-var _sendMetricsData = __webpack_require__(0);
-
-var _sendMetricsData2 = _interopRequireDefault(_sendMetricsData);
-
-var _topify = __webpack_require__(!(function webpackMissingModule() { var e = new Error("Cannot find module \"./topify\""); e.code = 'MODULE_NOT_FOUND'; throw e; }()));
-
-var _topify2 = _interopRequireDefault(_topify);
-
-var _draggingUtils = __webpack_require__(!(function webpackMissingModule() { var e = new Error("Cannot find module \"./dragging-utils\""); e.code = 'MODULE_NOT_FOUND'; throw e; }()));
-
-var _draggingUtils2 = _interopRequireDefault(_draggingUtils);
-
-var _youtubeHelpers = __webpack_require__(2);
-
-var _youtubeHelpers2 = _interopRequireDefault(_youtubeHelpers);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-_chrome.Cu.import('resource://gre/modules/Console.jsm'); // browser.storage calls may need to be tweaked to handle setting and
-// unsetting. Particularly calls to JSON.parse may need to be
-// added. In which case I may add a facade object(proxy?) to let them
-// act as they are below.
-
-
-// todo handle this probably on the bootstrap side
-
-_chrome.Cu.import('resource://gre/modules/Services.jsm');
-
-var storage = browser.storage;
-
-/* global Services */
-
-var DEFAULT_DIMENSIONS = {
-  height: storage.local.height,
-  width: storage.local.width,
-  minimizedHeight: 100
-};
-
-// TODO: if mvWindow changes, we need to destroy and create the player.
-// This must be why we get those dead object errors. Note that mvWindow
-// is passed into the DraggableElement constructor, could be a source of
-// those errors. Maybe pass a getter instead of a window reference.
-var mvWindow = void 0;
-
-var commandPollTimer = void 0;
-
-// waits till the window is ready, then calls callbacks.
-function whenReady(cb) {
-  // TODO: instead of setting timeout for each callback, just poll, then call all callbacks.
-  if (mvWindow && 'AppData' in mvWindow.wrappedJSObject && 'YT' in mvWindow.wrappedJSObject && 'PlayerState' in mvWindow.wrappedJSObject.YT) return cb();
-  (0, _timers.setTimeout)(function () {
-    whenReady(cb);
-  }, 25);
-}
-
-// I can't get frame scripts working, so instead we just set global state directly in react. fml
-function send(eventName, msg) {
-  whenReady(function () {
-    var newData = Object.assign(mvWindow.wrappedJSObject.AppData, msg);
-    mvWindow.wrappedJSObject.AppData = newData;
-  });
-}
-
-function getWindow() {
-  return mvWindow;
-}
-
-// Detecting when the window is closed is surprisingly difficult. If hotkeys
-// close the window, no detectable event is fired. Instead, we have to listen
-// for the nsIObserver event fired when _any_ XUL window is closed, then loop
-// over all windows and look for the minvid window.
-var onWindowClosed = function onWindowClosed(evt) {
-  // Note: we pass null here because minvid window is not of type 'navigator:browser'
-  var enumerator = Services.wm.getEnumerator(null);
-
-  var minvidExists = false;
-  while (enumerator.hasMoreElements()) {
-    var win = enumerator.getNext();
-    if (win.name === 'minvid') {
-      minvidExists = true;
-      break;
-    }
-  }
-  if (!minvidExists) closeWindow();
-};
-Services.obs.addObserver(onWindowClosed, 'xul-window-destroyed', false); // eslint-disable-line mozilla/no-useless-parameters
-
-// This handles the case where the min vid window is kept open
-// after closing the last firefox window.
-function closeRequested() {
-  destroy(true);
-}
-Services.obs.addObserver(closeRequested, 'browser-lastwindow-close-requested', false); // eslint-disable-line mozilla/no-useless-parameters
-
-function closeWindow() {
-  // If the window is gone, a 'dead object' error will be thrown; discard it.
-  try {
-    mvWindow && mvWindow.close();
-  } catch (ex) {} // eslint-disable-line no-empty
-  // stop communication
-  (0, _timers.clearTimeout)(commandPollTimer);
-  commandPollTimer = null;
-  // clear the window pointer
-  mvWindow = null;
-  // TODO: do we need to manually tear down frame scripts?
-}
-
-function create() {
-  if (mvWindow) return mvWindow;
-
-  var _saveLocation$screenP = _saveLocation2.default.screenPosition,
-      x = _saveLocation$screenP.x,
-      y = _saveLocation$screenP.y;
-  // implicit assignment to mvWindow global
-
-  var windowArgs = {
-    url: extension.getURL('default.html'),
-    left: x,
-    top: y,
-    width: storage.local.width,
-    height: storage.local.height,
-    focused: true,
-    type: 'panel'
-  };
-  mvWindow = browser.windows.create(windowArgs);
-  // once the window's ready, make it always topmost
-  whenReady(function () {
-    (0, _topify2.default)(mvWindow);
-  });
-  initCommunication();
-  whenReady(function () {
-    makeDraggable();
-  });
-  return mvWindow;
-}
-
-function initCommunication() {
-  var errorCount = 0;
-  // When the window's ready, start polling for pending commands
-  function pollForCommands() {
-    var cmd = void 0;
-    try {
-      cmd = mvWindow.wrappedJSObject.pendingCommands;
-    } catch (ex) {
-      console.error('something happened trying to get pendingCommands: ', ex); // eslint-disable-line no-console
-      if (++errorCount > 10) {
-        console.error('pendingCommands threw 10 times, giving up'); // eslint-disable-line no-console
-        // NOTE: if we can't communicate with the window, we have to close it,
-        // since the user cannot.
-        closeWindow();
-        return;
-      }
-    }
-    commandPollTimer = (0, _timers.setTimeout)(pollForCommands, 25);
-    if (!cmd || !cmd.length) return;
-    // We found a command! Erase it, then act on it.
-    mvWindow.wrappedJSObject.resetCommands();
-    for (var i = 0; i < cmd.length; i++) {
-      var parsed = void 0;
-      try {
-        parsed = JSON.parse(cmd[i]);
-      } catch (ex) {
-        console.error('malformed command sent to addon: ', cmd[i], ex); // eslint-disable-line no-console
-        break;
-      }
-      handleMessage(parsed);
-    }
-  }
-  whenReady(pollForCommands);
-}
-
-function makeDraggable() {
-  // Based on WindowDraggingElement usage in popup.xml
-  // https://dxr.mozilla.org/mozilla-central/source/toolkit/content/widgets/popup.xml#278-288
-  var draghandle = new _draggingUtils2.default(mvWindow);
-  draghandle.mouseDownCheck = function () {
-    return true;
-  };
-
-  // Update the saved position each time the draggable window is dropped.
-  // Listening for 'dragend' events doesn't work, so use 'mouseup' instead.
-  mvWindow.document.addEventListener('mouseup', function () {
-    _saveLocation2.default.screenPosition = { x: mvWindow.screenX, y: mvWindow.screenY };
-  });
-}
-
-function destroy(isUnload) {
-  closeWindow();
-  if (isUnload) {
-
-    // windows.onRemoved
-    Services.obs.removeObserver(onWindowClosed, 'xul-window-destroyed');
-    Services.obs.removeObserver(closeRequested, 'browser-lastwindow-close-requested');
-    _saveLocation2.default.destroy();
-  }
-}
-
-function updateWindow() {
-  return mvWindow || create();
-}
-
-function show() {
-  if (!mvWindow) create();
-}
-
-function isMinimized() {
-  return mvWindow.innerHeight <= DEFAULT_DIMENSIONS.minimizedHeight;
-}
-
-function maximize() {
-  mvWindow.resizeTo(DEFAULT_DIMENSIONS.width, DEFAULT_DIMENSIONS.height);
-  mvWindow.moveBy(0, DEFAULT_DIMENSIONS.minimizedHeight - DEFAULT_DIMENSIONS.height);
-  _saveLocation2.default.screenPosition = { x: mvWindow.screenX, y: mvWindow.screenY };
-}
-
-function handleMessage(msg) {
-  var title = msg.action;
-  var opts = msg;
-  if (title === 'send-to-tab') {
-    var pageUrl = opts.launchUrl ? opts.launchUrl : getPageUrl(opts.domain, opts.id, opts.time);
-    if (pageUrl) browser.tabs.create({ url: pageUrl });else {
-      console.error('could not parse page url for ', opts); // eslint-disable-line no-console
-      send('set-video', { error: 'Error loading video from ' + opts.domain });
-    }
-    send('set-video', { domain: '', src: '' });
-    closeWindow();
-  } else if (title === 'close') {
-    var _history = storage.local.get('history');
-    var _queue = storage.local.get('queue');
-    storage.local.set('history', _history.unshift(_queue.shift()));
-    send('set-video', { domain: '', src: '' });
-    closeWindow();
-  } else if (title === 'minimize') {
-    mvWindow.resizeTo(DEFAULT_DIMENSIONS.width, DEFAULT_DIMENSIONS.minimizedHeight);
-    mvWindow.moveBy(0, DEFAULT_DIMENSIONS.height - DEFAULT_DIMENSIONS.minimizedHeight);
-    _saveLocation2.default.screenPosition = { x: mvWindow.screenX, y: mvWindow.screenY };
-  } else if (title === 'maximize') {
-    maximize();
-  } else if (title === 'metrics-event') {
-    // Note: sending in the window ref to avoid circular imports.
-    (0, _sendMetricsData2.default)(opts.payload, mvWindow);
-  } else if (title === 'track-ended') {
-    var _history2 = storage.local.get('history');
-    var _queue2 = storage.local.get('queue');
-    _history2.unshift(_queue2.shift());
-    if (_queue2.length) {
-      send('set-video', {
-        playing: true,
-        queue: JSON.stringify(_queue2),
-        history: JSON.stringify(_history2)
-      });
-    }
-  } else if (title === 'track-removed') {
-    var _history3 = storage.local.get('history');
-    var _queue3 = storage.local.get('queue');
-    if (opts.isHistory) _history3.splice(opts.index, 1);else _queue3.splice(opts.index, 1);
-
-    if (_queue3.length) {
-      send('set-video', {
-        queue: JSON.stringify(_queue3),
-        history: JSON.stringify(_history3)
-      });
-    } else {
-      send('set-video', { domain: '', src: '' });
-      closeWindow();
-    }
-  } else if (title === 'track-added-from-history') {
-    // In this case we should duplicate the item from the history
-    // array.
-    var _history4 = storage.local.get('history');
-    var _queue4 = storage.local.get('queue');
-    _queue4.push(_history4[opts.index]);
-    (0, _sendMetricsData2.default)({
-      object: 'queue_view',
-      method: 'track-added-from-history',
-      domain: _queue4[0].domain
-    }, mvWindow);
-    send('set-video', { queue: JSON.stringify(_queue4) });
-  } else if (title === 'track-expedited') {
-    var _history5 = storage.local.get('history');
-    var _queue5 = storage.local.get('queue');
-    /*
-     * the goal here is to get the track index, move it to the top
-     * of the queue, and play it.
-     * We also need to handle the currently playing track correctly.
-      * If track 0 in the queue is not playing, and hasn't been
-     * played at all(currentTime == 0), we should move the newTrack
-     * to the top of the queue and play it.
-      * If track 0 in the queue is playing or has been played
-     * (currentTime > 0), we should move track 0 into the history
-     * array, and then move newTrack to the top of the queue
-     */
-    if (opts.moveIndexZero) {
-      _history5.unshift(_queue5.shift());
-      if (opts.isHistory) opts.index++;else opts.index--;
-    }
-
-    if (opts.isHistory) {
-      _queue5.unshift(_history5[opts.index]);
-    } else _queue5.unshift(_queue5.splice(opts.index, 1)[0]);
-
-    (0, _sendMetricsData2.default)({
-      object: 'queue_view',
-      method: 'track-expedited',
-      domain: _queue5[0].domain
-    }, mvWindow);
-
-    send('set-video', {
-      playing: true,
-      queue: JSON.stringify(_queue5),
-      history: JSON.stringify(_history5)
-    });
-  } else if (title === 'track-reordered') {
-    var _history6 = storage.local.get('history');
-    var _queue6 = storage.local.get('queue');
-    var newQueue = _queue6.slice();
-    newQueue.splice(opts.newIndex, 0, newQueue.splice(opts.oldIndex, 1)[0]);
-    _queue6 = newQueue;
-    (0, _sendMetricsData2.default)({
-      object: 'queue_view',
-      method: 'track-reordered',
-      domain: _queue6[0].domain
-    }, mvWindow);
-    send('set-video', { queue: JSON.stringify(_queue6) });
-  } else if (title === 'play-from-history') {
-    queue.splice(0);
-    queue = history.slice(0, 10);
-    send('set-video', {
-      playing: true,
-      exited: false,
-      queue: JSON.stringify(queue),
-      history: JSON.stringify(history)
-    });
-  } else if (title === 'clear') {
-    (0, _sendMetricsData2.default)({
-      object: 'queue_view',
-      method: 'clear:' + opts.choice,
-      domain: ''
-    }, mvWindow);
-    if (opts.choice === 'history') {
-      storage.local.set('history', []);
-      send('set-video', { history: JSON.stringify(storage.local.history) });
-    } else {
-      storage.local.set('queue', []);
-      send('set-video', { domain: '', src: '', queue: JSON.stringify(storage.local.queue) });
-      closeWindow();
-    }
-  } else if (title === 'confirm') {
-    var _history7 = storage.local.get('history');
-    var _queue7 = storage.local.get('queue');
-    if (opts.choice === 'playlist') {
-      _youtubeHelpers2.default.getPlaylist(opts, function (playlist) {
-
-        // if the playlist was launched on with a certain video
-        // we need to grab the playlist at that playlist
-        if (opts.index) playlist = playlist.splice(opts.index - 1);
-
-        if (opts.playerMethod === 'play') {
-          // if the 'play-now' option was selected, and min vid has a
-          // track playing we need to move that item to history before
-          // front loading the playlist results into the queue.
-          if (opts.moveIndexZero) _history7.unshift(_queue7.shift());
-          _queue7 = playlist.concat(_queue7);
-        } else _queue7 = _queue7.concat(playlist);
-
-        var response = {
-          trackAdded: opts.playerMethod === 'add-to-queue' && _queue7.length > 1,
-          error: false,
-          queue: JSON.stringify(_queue7),
-          history: JSON.stringify(_history7),
-          confirm: false,
-          confirmContent: '{}'
-        };
-
-        if (opts.playerMethod === 'play') response.playing = true;
-        send('set-video', response);
-      });
-    } else if (opts.choice === 'cancel') {
-      var _history8 = storage.local.get('history');
-      var _queue8 = storage.local.get('queue');
-      if (!_queue8.length) {
-        send('set-video', {
-          domain: '',
-          src: '',
-          confirm: false,
-          confirmContent: '{}'
-        });
-        closeWindow();
-      } else {
-        send('set-video', {
-          confirm: false,
-          confirmContent: '{}',
-          queue: JSON.stringify(_queue8),
-          history: JSON.stringify(_history8)
-        });
-      }
-    } else {
-      var _history9 = storage.local.get('history');
-      var _queue9 = storage.local.get('queue');
-      _youtubeHelpers2.default.getVideo(opts, function (video) {
-        if (opts.playerMethod === 'play') {
-          // if the 'play-now' option was selected, and min vid has a
-          // track playing we need to move that item to history before
-          // front loading the video into the queue.
-          if (opts.moveIndexZero) _history9.unshift(_queue9.shift());
-          _queue9.unshift(video);
-        } else _queue9.push(video);
-        var response = {
-          trackAdded: opts.playerMethod === 'add-to-queue' && _queue9.length > 1,
-          error: false,
-          queue: JSON.stringify(_queue9),
-          history: JSON.stringify(_history9),
-          confirm: false,
-          confirmContent: '{}'
-        };
-
-        if (opts.playerMethod === 'play') response.playing = true;
-
-        send('set-video', response);
-      });
-    }
-  }
-}
-
-function getPageUrl(domain, id, time) {
-  var url = void 0;
-  if (domain.indexOf('youtube') > -1) {
-    url = 'https://youtube.com/watch?v=' + id + '&t=' + Math.floor(time);
-  } else if (domain.indexOf('vimeo') > -1) {
-    var min = Math.floor(time / 60);
-    var sec = Math.floor(time - min * 60);
-    url = 'https://vimeo.com/' + id + '#t=' + min + 'm' + sec + 's';
-  }
-
-  return url;
-}
-
-// todo: export this object somehow
-
-exports.whenReady = whenReady;
-exports.create = create;
-exports.destroy = destroy;
-exports.getWindow = getWindow;
-exports.updateWindow = updateWindow;
-exports.send = send;
-exports.show = show;
-exports.maximize = maximize;
-exports.isMinimized = isMinimized;
-
-/***/ }),
-/* 2 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var qs = __webpack_require__(!(function webpackMissingModule() { var e = new Error("Cannot find module \"sdk/querystring\""); e.code = 'MODULE_NOT_FOUND'; throw e; }()));
-var apiKey = browser.runtime.getManifest().config['YOUTUBE_DATA_API_KEY'];
-var parse = __webpack_require__(3).parse;
-var toSeconds = __webpack_require__(3).toSeconds;
-
-module.exports = {
-  getVideo: getVideo,
-  getPlaylist: getPlaylist,
-  getPlaylistMeta: getPlaylistMeta
-};
-
-function getVideo(opts, cb) {
-  var query = qs.stringify({
-    key: apiKey,
-    id: opts.videoId,
-    part: 'snippet,contentDetails,status'
-  });
-
-  var url = 'https://www.googleapis.com/youtube/v3/videos?' + query;
-  fetch(url).then(function (res) {
-    var result = res.json.items;
-    var item = {
-      cc: opts.cc,
-      videoId: opts.videoId,
-      url: 'https://youtube.com/watch?v=' + opts.videoId,
-      domain: 'youtube.com',
-      currentTime: opts.time || 0,
-      error: false,
-      title: result.length ? result[0].snippet.title : '',
-      duration: result.length ? toSeconds(parse(result[0].contentDetails.duration)) : 0,
-      preview: 'https://img.youtube.com/vi/' + opts.videoId + '/0.jpg',
-      live: result.length ? Boolean(result[0].snippet.liveBroadcastContent === 'live') : false
-    };
-
-    var url = 'https://www.youtube.com/get_video_info?video_id=' + opts.videoId;
-    fetch(url).then(function (res) {
-      var result = qs.parse(res.text);
-      if (result.status === 'fail') {
-        if (result.reason.indexOf('restricted')) item.error = 'error_youtube_not_allowed';else item.error = 'error_youtube_not_found';
-      }
-
-      cb(item);
-    });
-  });
-}
-
-function getPlaylistMeta(opts, cb) {
-  var query = qs.stringify({
-    key: apiKey,
-    part: 'snippet',
-    id: opts.playlistId
-  });
-
-  var url = 'https://www.googleapis.com/youtube/v3/playlists?' + query;
-  fetch(url).then(function (res) {
-    var result = res.json.items[0].snippet;
-
-    query = qs.parse(query);
-    query.id = opts.videoId;
-    query = qs.stringify(query);
-
-    var url = 'https://www.googleapis.com/youtube/v3/videos?' + query;
-    fetch(url).then(function (res) {
-      cb(Object.assign(opts, {
-        playlistTitle: result.title,
-        videoTitle: res.json.items[0].snippet.title
-      }));
-    });
-  });
-}
-
-function getPlaylist(opts, cb, passedPlaylist) {
-  var query = qs.stringify({
-    key: apiKey,
-    part: 'snippet',
-    playlistId: opts.playlistId,
-    maxResults: 50,
-    pageToken: opts.pageToken || ''
-  });
-
-  var url = 'https://www.googleapis.com/youtube/v3/playlistItems?' + query;
-  fetch(url).then(function (res) {
-    var result = res.json;
-    if (result.pageInfo.totalResults <= 50) {
-      Promise.all(result.items.map(function (i) {
-        return getVideoDetails(i.snippet.resourceId.videoId, i.snippet.position);
-      })).then(function (playlist) {
-        return cb(playlist.sort(function (a, b) {
-          return a.position - b.position;
-        }));
-      });
-    } else {
-      var shouldFetch = result.items[result.items.length - 1].snippet.position < result.pageInfo.totalResults - 1;
-      Promise.all(result.items.map(function (i) {
-        return getVideoDetails(i.snippet.resourceId.videoId, i.snippet.position);
-      })).then(function (playlist) {
-        return passedPlaylist ? passedPlaylist.concat(playlist) : playlist;
-      }).then(function (playlist) {
-        return shouldFetch ? getPlaylist(Object.assign(qs.parse(query), { pageToken: result.nextPageToken }), cb, playlist) : cb(playlist);
-      });
-    }
-  });
-}
-
-function getVideoDetails(videoId, position) {
-  return new Promise(function (resolve) {
-    getVideo({
-      time: 0,
-      videoId: videoId
-    }, function (item) {
-      item.position = position;
-      resolve(item);
-    });
-  });
-}
-
-/***/ }),
 /* 3 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-Object.defineProperty(exports, "__esModule", {
-	value: true
-});
-/**
- * @description A module for parsing ISO8601 durations
- */
+var _getRandomId = __webpack_require__(4);
 
-/**
- * The pattern used for parsing ISO8601 duration (PnYnMnDTnHnMnS).
- * This does not cover the week format PnW.
- */
-
-// PnYnMnDTnHnMnS
-var numbers = '\\d+(?:[\\.,]\\d{0,3})?';
-var weekPattern = '(' + numbers + 'W)';
-var datePattern = '(' + numbers + 'Y)?(' + numbers + 'M)?(' + numbers + 'D)?';
-var timePattern = 'T(' + numbers + 'H)?(' + numbers + 'M)?(' + numbers + 'S)?';
-
-var iso8601 = 'P(?:' + weekPattern + '|' + datePattern + '(?:' + timePattern + ')?)';
-var objMap = ['weeks', 'years', 'months', 'days', 'hours', 'minutes', 'seconds'];
-
-/**
- * The ISO8601 regex for matching / testing durations
- */
-var pattern = exports.pattern = new RegExp(iso8601);
-
-/** Parse PnYnMnDTnHnMnS format to object
- * @param {string} durationString - PnYnMnDTnHnMnS formatted string
- * @return {Object} - With a property for each part of the pattern
- */
-var parse = exports.parse = function parse(durationString) {
-	// slice away first entry in match-array
-	return durationString.match(pattern).slice(1).reduce(function (prev, next, idx) {
-		prev[objMap[idx]] = parseFloat(next) || 0;
-		return prev;
-	}, {});
-};
-
-/**
- * Convert ISO8601 duration object to seconds
- *
- * @param {Object} duration - The duration object
- * @param {Date=} startDate - The starting point for calculating the duration
- * @return {Number}
- */
-var toSeconds = exports.toSeconds = function toSeconds(duration, startDate) {
-	// create two equal timestamps, add duration to 'then' and return time difference
-	var timestamp = startDate ? startDate.getTime() : Date.now();
-	var now = new Date(timestamp);
-	var then = new Date(timestamp);
-
-	then.setFullYear(then.getFullYear() + duration.years);
-	then.setMonth(then.getMonth() + duration.months);
-	then.setDate(then.getDate() + duration.days);
-	then.setHours(then.getHours() + duration.hours);
-	then.setMinutes(then.getMinutes() + duration.minutes);
-	// then.setSeconds(then.getSeconds() + duration.seconds);
-	then.setMilliseconds(then.getMilliseconds() + duration.seconds * 1000);
-	// special case weeks
-	then.setDate(then.getDate() + duration.weeks * 7);
-
-	var seconds = (then.getTime() - now.getTime()) / 1000;
-	return seconds;
-};
-
-exports.default = {
-	toSeconds: toSeconds,
-	pattern: pattern,
-	parse: parse
-};
-
-/***/ }),
-/* 4 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
+var _getRandomId2 = _interopRequireDefault(_getRandomId);
 
 var _launchVideo = __webpack_require__(5);
 
 var _launchVideo2 = _interopRequireDefault(_launchVideo);
 
-var _sendMetricsData = __webpack_require__(0);
+var _getVimeoUrl = __webpack_require__(15);
+
+var _getVimeoUrl2 = _interopRequireDefault(_getVimeoUrl);
+
+var _youtubeHelpers = __webpack_require__(0);
+
+var _youtubeHelpers2 = _interopRequireDefault(_youtubeHelpers);
+
+var _sendMetricsData = __webpack_require__(2);
 
 var _sendMetricsData2 = _interopRequireDefault(_sendMetricsData);
 
+var _getSoundcloudUrl = __webpack_require__(16);
+
+var _getSoundcloudUrl2 = _interopRequireDefault(_getSoundcloudUrl);
+
+var _messageHandler = __webpack_require__(17);
+
+var _messageHandler2 = _interopRequireDefault(_messageHandler);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-/*
- * This Source Code is subject to the terms of the Mozilla Public License
- * version 2.0 (the 'License'). You can obtain a copy of the License at
- * http://mozilla.org/MPL/2.0/.
- */
+if (!browser.storage.local.clientUUID) {
+  browser.storage.local.set({ 'clientUUID': (0, _getRandomId2.default)() });
+} /*
+   * This Source Code is subject to the terms of the Mozilla Public License
+   * version 2.0 (the 'License'). You can obtain a copy of the License at
+   * http://mozilla.org/MPL/2.0/.
+   */
 
 // set our unique identifier for metrics
 // (needs to be set before send-metrics-data is loaded)
-if (!browser.storage.local.clientUUID) {
-  browser.storage.local.set('clientUUID', __webpack_require__(15)());
-}
+
 
 if (!browser.storage.local.queue) browser.storage.local.queue = [];
 if (!browser.storage.local.history) browser.storage.local.history = [];
 
 // import windowUtils from './lib/window-utils';
 
-// import getVimeoUrl from './lib/get-vimeo-url';
-// import youtubeHelpers from './lib/youtube-helpers';
-
-// import getSoundcloudUrl from './lib/get-soundcloud-url';
 // import contextMenuHandlers from './lib/context-menu-handlers';
+//   contextMenuHandlers.init();
 
-// exports.main = function() {
-//   contextMenuHandlers.init(windowUtils.getWindow());
-// };
+
+var port = browser.runtime.connect({ name: "connection-to-legacy" });
+
+console.log('HEEEYYY, background.js addListener');
+port.onMessage.addListener(function (msg) {
+  console.log('HEEEYYY, background.js this is the listener');
+  if (msg.content === 'msg-from-frontend') (0, _messageHandler2.default)(msg.data, port);
+});
+console.log('HEEEYYY, background.js second addListener');
 
 browser.runtime.onMessage.addListener(onMessage);
 
@@ -851,11 +384,11 @@ function onMessage(opts) {
 
   if (title === 'launch') {
     if (opts.domain.indexOf('youtube.com') > -1) {
-      // opts.getUrlFn = youtubeHelpers.getVideo;
+      opts.getUrlFn = _youtubeHelpers2.default.getVideo;
     } else if (opts.domain.indexOf('vimeo.com') > -1) {
-      // opts.getUrlFn = getVimeoUrl;
+      opts.getUrlFn = _getVimeoUrl2.default;
     } else if (opts.domain.indexOf('soundcloud.com') > -1) {
-      // opts.getUrlFn = getSoundcloudUrl;
+      opts.getUrlFn = _getSoundcloudUrl2.default;
     }
 
     (0, _sendMetricsData2.default)({
@@ -875,6 +408,26 @@ function onMessage(opts) {
 // };
 
 /***/ }),
+/* 4 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+exports.default = function () {
+  // https://stackoverflow.com/questions/105034/create-guid-uuid-in-javascript#2117523
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+    var r = Math.random() * 16 | 0,
+        v = c == 'x' ? r : r & 0x3 | 0x8;
+    return v.toString(16);
+  });
+};
+
+/***/ }),
 /* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -884,7 +437,9 @@ function onMessage(opts) {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.launchVideo = launchVideo;
+exports.default = launchVideo;
+
+var _querystring = __webpack_require__(1);
 
 var _getVideoId = __webpack_require__(6);
 
@@ -894,141 +449,163 @@ var _isAudio = __webpack_require__(8);
 
 var _isAudio2 = _interopRequireDefault(_isAudio);
 
-var _windowUtils = __webpack_require__(1);
+var _windowMessages = __webpack_require__(9);
 
-var _windowUtils2 = _interopRequireDefault(_windowUtils);
+var _windowMessages2 = _interopRequireDefault(_windowMessages);
 
-var _youtubeHelpers = __webpack_require__(2);
+var _youtubeHelpers = __webpack_require__(0);
 
 var _youtubeHelpers2 = _interopRequireDefault(_youtubeHelpers);
 
-var _sendMetricsData = __webpack_require__(0);
+var _sendMetricsData = __webpack_require__(2);
 
 var _sendMetricsData2 = _interopRequireDefault(_sendMetricsData);
 
-var _getLocaleStrings = __webpack_require__(10);
+var _v = __webpack_require__(11);
 
-var _getLocaleStrings2 = _interopRequireDefault(_getLocaleStrings);
+var _v2 = _interopRequireDefault(_v);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-// active tabs tabs
-// querystring
-// prefs keyShortcutsenabled
-
-// import qs from 'sdk/querystring';
-function qs() {
-  console.error('need to find a good query string parsing replacement, there should be a browser api for this');
-}
-
 var storage = browser.storage.local;
+// import getLocaleStrings from './get-locale-strings';
 
 function isAudio(url) {
   return (0, _isAudio2.default)(url) || new RegExp('^(https?:)?//soundcloud.com\/').exec(url);
 }
 
+var fauxLocales = {
+  errorMsg: 'my locale message',
+  errorLink: 'my  locale message',
+  errorYTNotFound: 'my  locale message',
+  errorYTNotAllowed: 'my  locale message',
+  errorScLimit: 'my  locale message',
+  errorScConnection: 'my  locale message',
+  errorScTrack: 'my  locale message',
+  errorScStreamable: 'my  locale message',
+  errorScRestricted: 'my  locale message',
+  errorVimeoConnection: 'my  locale message',
+  itemAddedNotification: 'my  locale message',
+  endOfQueue: 'my  locale message',
+  loadingMsg: 'my  locale message',
+  confirmMsg: 'my  locale message',
+  addConfirmMsg: 'my  locale message',
+  playConfirmMsg: 'my  locale message',
+  clear: 'my  locale message',
+  history: 'my  locale message',
+  playQueue: 'my  locale message',
+  ttMute: 'my  locale message',
+  ttPlay: 'my  locale message',
+  ttPause: 'my  locale message',
+  ttClose: 'my  locale message',
+  ttUnmute: 'my  locale message',
+  ttNext: 'my  locale message',
+  ttPrev: 'my  locale message',
+  ttMinimize: 'my  locale message',
+  ttMaximize: 'my  locale message',
+  ttSendToTab: 'my  locale message',
+  ttSwitchVis: 'my  locale message',
+  ttOpenQueue: 'my  locale message',
+  ttCloseQueue: 'my  locale message'
+};
+
 // Pass in a video URL as opts.src or pass in a video URL lookup function as opts.getUrlFn
 function launchVideo(opts) {
-  // UpdateWindow might create a new panel, so do the remaining launch work
-  // asynchronously.
-  _windowUtils2.default.updateWindow();
-  _windowUtils2.default.whenReady(function () {
-    var getUrlFn = opts.getUrlFn;
-    var action = opts.action;
+  var getUrlFn = opts.getUrlFn;
+  var action = opts.action;
 
-    delete opts.getUrlFn;
-    delete opts.action;
+  delete opts.getUrlFn;
+  delete opts.action;
 
-    if (action === 'play') opts.playing = true;
+  if (action === 'play') opts.playing = true;
 
-    _windowUtils2.default.show();
-    // send some initial data to open the loading view
-    // before we fetch the media source
-    _windowUtils2.default.send('set-video', opts = Object.assign({
-      id: __webpack_require__(11)(),
-      width: storage.width,
-      height: storage.height,
-      videoId: (0, _getVideoId2.default)(opts.url) ? (0, _getVideoId2.default)(opts.url).id : '',
-      strings: (0, _getLocaleStrings2.default)(opts.domain, isAudio(opts.url)),
-      tabId: browser.tabs.TAB.id,
-      launchUrl: opts.url,
-      currentTime: 0,
-      keyShortcutsEnabled: prefs['keyShortcutsEnabled'],
-      confirm: false,
-      confirmContent: '{}'
-    }, opts));
+  console.log('launch locales', opts.domain, isAudio(opts.url));
 
-    // YouTube playlist handling
-    if (opts.domain === 'youtube.com' && !!~opts.url.indexOf('list')) {
-      if (!!~opts.url.indexOf('watch?v')) {
-        var parsed = qs.parse(opts.url.substr(opts.url.indexOf('?') + 1));
-        _youtubeHelpers2.default.getPlaylistMeta({
-          videoId: parsed.v,
-          playlistId: parsed.list
-        }, function (meta) {
-          opts.confirmContent = meta;
-          opts.confirmContent.action = action;
-          opts.confirmContent = JSON.stringify(opts.confirmContent);
-          (0, _sendMetricsData2.default)({
-            object: 'confirm_view',
-            method: 'launch:video:' + action,
-            domain: opts.domain
-          });
-          if (_windowUtils2.default.isMinimized()) _windowUtils2.default.maximize();
-          _windowUtils2.default.send('set-video', Object.assign(opts, {
-            confirm: true,
-            error: false,
-            minimized: false,
-            queue: JSON.stringify(storage.queue),
-            history: JSON.stringify(storage.history)
-          }));
+  _windowMessages2.default.send(opts = Object.assign({
+    id: (0, _v2.default)(),
+    width: storage.width,
+    height: storage.height,
+    videoId: (0, _getVideoId2.default)(opts.url) ? (0, _getVideoId2.default)(opts.url).id : '',
+    strings: fauxLocales, // getLocaleStrings(opts.domain, isAudio(opts.url)),
+    // tabId: browser.tabs.TAB.id,
+    launchUrl: opts.url,
+    currentTime: 0,
+    confirm: false,
+    confirmContent: '{}'
+  }, opts));
+
+  // YouTube playlist handling
+  if (opts.domain === 'youtube.com' && !!~opts.url.indexOf('list')) {
+    if (!!~opts.url.indexOf('watch?v')) {
+      var parsed = (0, _querystring.parse)(opts.url.substr(opts.url.indexOf('?') + 1));
+      _youtubeHelpers2.default.getPlaylistMeta({
+        videoId: parsed.v,
+        playlistId: parsed.list
+      }, function (meta) {
+        opts.confirmContent = meta;
+        opts.confirmContent.action = action;
+        opts.confirmContent = JSON.stringify(opts.confirmContent);
+        (0, _sendMetricsData2.default)({
+          object: 'confirm_view',
+          method: 'launch:video:' + action,
+          domain: opts.domain
         });
-      } else {
-        // only playlist handling
-        var _parsed = qs.parse(opts.url.substr(opts.url.indexOf('?') + 1));
-        _youtubeHelpers2.default.getPlaylist({ playlistId: _parsed.list }, function (playlist) {
-          if (action === 'play') {
-            storage.queue = playlist.concat(storage.queue);
-          } else storage.queue = storage.queue.concat(playlist);
-
-          var response = {
-            trackAdded: action === 'add-to-queue' && storage.queue.length > 1,
-            error: false,
-            queue: JSON.stringify(storage.queue),
-            history: JSON.stringify(storage.history)
-          };
-
-          (0, _sendMetricsData2.default)({
-            object: 'confirm_view ',
-            method: 'launch:playlist:' + action,
-            domain: opts.domain
-          });
-
-          if (action === 'play') response.playing = true;
-          _windowUtils2.default.send('set-video', response);
-        });
-      }
+        // TODO: figure out isMINIMIZED
+        // if (windowUtils.isMinimized()) windowUtils.maximize();
+        _windowMessages2.default.send(Object.assign(opts, {
+          confirm: true,
+          error: false,
+          minimized: false,
+          queue: JSON.stringify(storage.queue),
+          history: JSON.stringify(storage.history)
+        }));
+      });
     } else {
-      // fetch the media source and set it
-      getUrlFn(opts, function (item) {
-        if (item.error) console.error('LaunchVideo failed to get the streamUrl: ', item.err); // eslint-disable-line no-console
+      // only playlist handling
+      var _parsed = (0, _querystring.parse)(opts.url.substr(opts.url.indexOf('?') + 1));
+      _youtubeHelpers2.default.getPlaylist({ playlistId: _parsed.list }, function (playlist) {
+        if (action === 'play') {
+          storage.queue = playlist.concat(storage.queue);
+        } else storage.queue = storage.queue.concat(playlist);
 
-        if (isAudio(item.url)) item.player = 'audio';
-
-        if (action === 'play') storage.queue.unshift(item);else storage.queue.push(item);
-
-        var videoOptions = {
+        var response = {
           trackAdded: action === 'add-to-queue' && storage.queue.length > 1,
-          error: item.error ? item.error : false,
+          error: false,
           queue: JSON.stringify(storage.queue),
           history: JSON.stringify(storage.history)
         };
 
-        if (action === 'play') videoOptions.playing = true;
-        _windowUtils2.default.send('set-video', videoOptions);
+        (0, _sendMetricsData2.default)({
+          object: 'confirm_view ',
+          method: 'launch:playlist:' + action,
+          domain: opts.domain
+        });
+
+        if (action === 'play') response.playing = true;
+        _windowMessages2.default.send(response);
       });
     }
-  });
+  } else {
+    // fetch the media source and set it
+    getUrlFn(opts, function (item) {
+      if (item.error) console.error('LaunchVideo failed to get the streamUrl: ', item.error); // eslint-disable-line no-console
+
+      if (isAudio(item.url)) item.player = 'audio';
+
+      if (action === 'play') storage.queue.unshift(item);else storage.queue.push(item);
+
+      var videoOptions = {
+        trackAdded: action === 'add-to-queue' && storage.queue.length > 1,
+        error: item.error ? item.error : false,
+        queue: JSON.stringify(storage.queue),
+        history: JSON.stringify(storage.history)
+      };
+
+      if (action === 'play') videoOptions.playing = true;
+      console.log('did it make it here????', videoOptions);
+      _windowMessages2.default.send(videoOptions);
+    });
+  }
 }
 
 /***/ }),
@@ -1232,128 +809,32 @@ function isAudio(src) {
 
 /***/ }),
 /* 9 */
-/***/ (function(module, exports) {
+/***/ (function(module, exports, __webpack_require__) {
 
-module.exports = {
-	"title": "Min Vid",
-	"name": "min-vid",
-	"version": "0.3.8",
-	"private": true,
-	"icon": "resource://min-vid/docs/images/dark-logo.png",
-	"description": "Minimize a web video or audio track into a small always-on-top panel in Firefox.",
-	"homepage": "https://github.com/meandavejustice/min-vid",
-	"repository": "meandavejustice/min-vid",
-	"main": "index.js",
-	"author": "meandave",
-	"updateURL": "https://testpilot.firefox.com/files/@min-vid/updates.json",
-	"engines": {
-		"firefox": ">=38.0a1"
-	},
-	"permissions": {
-		"multiprocess": true,
-		"private-browsing": true,
-		"unsafe-content-script": true
-	},
-	"bugs": {
-		"url": "https://github.com/meandavejustice/min-vid/issues"
-	},
-	"config": {
-		"SOUNDCLOUD_CLIENT_ID": "c23df04aed9a788cd31fd5b100f22a7a",
-		"GA_TRACKING_ID": "UA-46704490-3",
-		"YOUTUBE_DATA_API_KEY": "AIzaSyCfy3cdlDMB9cEVwuHiGACnUjbc9G0gXTc"
-	},
-	"preferences": [
-		{
-			"name": "height",
-			"title": "Window height",
-			"description": "Default window height (260)",
-			"type": "integer",
-			"value": 260
-		},
-		{
-			"name": "width",
-			"title": "Window width",
-			"description": "Default window width (400)",
-			"type": "integer",
-			"value": 400
-		},
-		{
-			"description": "Keyboard shortcuts enabled",
-			"type": "bool",
-			"name": "keyShortcutsEnabled",
-			"value": true,
-			"title": "Keyboard shortcuts enabled"
-		}
-	],
-	"browserify-css": {
-		"autoInject": true,
-		"minify": true,
-		"rootDir": "."
-	},
-	"scripts": {
-		"lint": "eslint . bin/*",
-		"build": "webpack",
-		"build-script": "cross-env NODE_ENV=production browserify app.js -t [ babelify --presets [ react es2015 ] svgify ] > data/bundle.js",
-		"watch-script": "cross-env NODE_ENV=development watchify app.js -o data/bundle.js -t [ babelify --presets [ react es2015 ] svgify ]",
-		"storybook": "start-storybook -p 9001 -c .storybook",
-		"start": "npm run dev",
-		"watch": "jpm watchpost --post-url http://localhost:8888",
-		"dev": "npm run locales && npm run watch-script & npm run watch & http-server -c-1 --cors",
-		"prepackage": "npm run locales && npm run lint",
-		"package": "npm run build-script && jpm xpi && npm run mv-xpi",
-		"postpackage": "addons-linter addon.xpi -o text",
-		"locales": "node ./bin/locales",
-		"mv-xpi": "mv min-vid.xpi addon.xpi",
-		"prepush": "npm run package",
-		"deploy": "deploy-txp"
-	},
-	"license": "MPL-2.0",
-	"dependencies": {
-		"get-video-id": "2.1.4",
-		"iso8601-duration": "1.0.6",
-		"lodash.debounce": "4.0.8",
-		"uuid": "3.1.0"
-	},
-	"devDependencies": {
-		"@kadira/storybook": "2.35.3",
-		"addons-linter": "0.20.0",
-		"audiosource": "3.0.2",
-		"babel": "6.23.0",
-		"babel-core": "6.25.0",
-		"babel-loader": "7.1.1",
-		"babel-preset-env": "1.6.0",
-		"babel-preset-es2015": "6.24.1",
-		"babel-preset-react": "6.24.1",
-		"babelify": "7.3.0",
-		"browserify": "14.4.0",
-		"classnames": "2.2.5",
-		"cross-env": "5.0.0",
-		"deep-assign": "2.0.0",
-		"deploy-txp": "1.0.7",
-		"eslint": "3.19.0",
-		"eslint-plugin-mozilla": "0.3.2",
-		"eslint-plugin-react": "7.0.1",
-		"gl-waveform": "2.4.3",
-		"glob": "7.1.2",
-		"http-server": "0.10.0",
-		"husky": "0.13.4",
-		"jpm": "1.3.1",
-		"just-extend": "1.1.22",
-		"keyboardjs": "2.3.3",
-		"react": "15.5.4",
-		"react-dom": "15.5.4",
-		"react-player": "0.18.0",
-		"react-tabs": "0.8.3",
-		"react-tooltip": "3.3.0",
-		"sortablejs": "1.6.0",
-		"storybook-host": "2.0.0-alpha.1",
-		"svgify": "0.0.0",
-		"svgo-loader": "1.2.1",
-		"watchify": "3.9.0",
-		"webpack": "3.0.0",
-		"webworkify-webpack": "2.0.5"
-	}
-};
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+var port = browser.runtime.connect({ name: "connection-to-legacy" });
+
+function send(data) {
+  port.postMessage({
+    content: 'window:send',
+    data: data
+  });
+}
+
+// function getCoords() {}
+
+function close() {
+  port.postMessage({
+    content: 'window:close'
+  });
+}
+
+exports.default = { send: send, close: close };
 
 /***/ }),
 /* 10 */
@@ -1362,45 +843,75 @@ module.exports = {
 "use strict";
 
 
-var _ = __webpack_require__(!(function webpackMissingModule() { var e = new Error("Cannot find module \"sdk/l10n\""); e.code = 'MODULE_NOT_FOUND'; throw e; }())).get;
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+/**
+ * @description A module for parsing ISO8601 durations
+ */
 
-module.exports = function (domain, isAudio) {
-  var mediaType = isAudio ? _('media_type_audio') : _('media_type_video');
+/**
+ * The pattern used for parsing ISO8601 duration (PnYnMnDTnHnMnS).
+ * This does not cover the week format PnW.
+ */
 
-  return JSON.stringify({
-    errorMsg: _('error_msg'),
-    errorLink: _('error_link'),
-    errorYTNotFound: _('error_youtube_not_found'),
-    errorYTNotAllowed: _('error_youtube_not_allowed'),
-    errorScLimit: _('error_sc_limit'),
-    errorScConnection: _('error_sc_connection'),
-    errorScTrack: _('error_sc_not_track'),
-    errorScStreamable: _('error_sc_not_streamable'),
-    errorScRestricted: _('error_sc_restricted'),
-    errorVimeoConnection: _('error_vimeo_connection'),
-    itemAddedNotification: _('item_added_notification'),
-    endOfQueue: _('end_of_queue'),
-    loadingMsg: _('loading_view_msg', mediaType, domain),
-    confirmMsg: _('confirm_msg'),
-    addConfirmMsg: _('add_confirm_msg'),
-    playConfirmMsg: _('play_confirm_msg'),
-    clear: _('clear'),
-    history: _('history'),
-    playQueue: _('play_queue'),
-    ttMute: _('tooltip_mute'),
-    ttPlay: _('tooltip_play'),
-    ttPause: _('tooltip_pause'),
-    ttClose: _('tooltip_close'),
-    ttUnmute: _('tooltip_unmute'),
-    ttNext: _('tooltip_next'),
-    ttPrev: _('tooltip_previous'),
-    ttMinimize: _('tooltip_minimize'),
-    ttMaximize: _('tooltip_maximize'),
-    ttSendToTab: _('tooltip_send_to_tab'),
-    ttSwitchVis: _('tooltip_switch_visual'),
-    ttOpenQueue: _('tooltip_open_queue'),
-    ttCloseQueue: _('tooltip_close_queue')
-  });
+// PnYnMnDTnHnMnS
+var numbers = '\\d+(?:[\\.,]\\d{0,3})?';
+var weekPattern = '(' + numbers + 'W)';
+var datePattern = '(' + numbers + 'Y)?(' + numbers + 'M)?(' + numbers + 'D)?';
+var timePattern = 'T(' + numbers + 'H)?(' + numbers + 'M)?(' + numbers + 'S)?';
+
+var iso8601 = 'P(?:' + weekPattern + '|' + datePattern + '(?:' + timePattern + ')?)';
+var objMap = ['weeks', 'years', 'months', 'days', 'hours', 'minutes', 'seconds'];
+
+/**
+ * The ISO8601 regex for matching / testing durations
+ */
+var pattern = exports.pattern = new RegExp(iso8601);
+
+/** Parse PnYnMnDTnHnMnS format to object
+ * @param {string} durationString - PnYnMnDTnHnMnS formatted string
+ * @return {Object} - With a property for each part of the pattern
+ */
+var parse = exports.parse = function parse(durationString) {
+	// slice away first entry in match-array
+	return durationString.match(pattern).slice(1).reduce(function (prev, next, idx) {
+		prev[objMap[idx]] = parseFloat(next) || 0;
+		return prev;
+	}, {});
+};
+
+/**
+ * Convert ISO8601 duration object to seconds
+ *
+ * @param {Object} duration - The duration object
+ * @param {Date=} startDate - The starting point for calculating the duration
+ * @return {Number}
+ */
+var toSeconds = exports.toSeconds = function toSeconds(duration, startDate) {
+	// create two equal timestamps, add duration to 'then' and return time difference
+	var timestamp = startDate ? startDate.getTime() : Date.now();
+	var now = new Date(timestamp);
+	var then = new Date(timestamp);
+
+	then.setFullYear(then.getFullYear() + duration.years);
+	then.setMonth(then.getMonth() + duration.months);
+	then.setDate(then.getDate() + duration.days);
+	then.setHours(then.getHours() + duration.hours);
+	then.setMinutes(then.getMinutes() + duration.minutes);
+	// then.setSeconds(then.getSeconds() + duration.seconds);
+	then.setMilliseconds(then.getMilliseconds() + duration.seconds * 1000);
+	// special case weeks
+	then.setDate(then.getDate() + duration.weeks * 7);
+
+	var seconds = (then.getTime() - now.getTime()) / 1000;
+	return seconds;
+};
+
+exports.default = {
+	toSeconds: toSeconds,
+	pattern: pattern,
+	parse: parse
 };
 
 /***/ }),
@@ -1612,9 +1123,331 @@ module.exports = bytesToUuid;
 "use strict";
 
 
-module.exports = function () {
-  return __webpack_require__(!(function webpackMissingModule() { var e = new Error("Cannot find module \"sdk/util/uuid\""); e.code = 'MODULE_NOT_FOUND'; throw e; }())).uuid().number.replace('{', '').replace('}', '');
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+exports.default = function (opts, cb) {
+  var url = 'https://player.vimeo.com/video/' + opts.videoId + '/config';
+  fetch(url).then(function (res) {
+    if (!res.json) {
+      cb('errorVimeoConnection');
+      return;
+    }
+
+    var item = {
+      videoId: opts.videoId,
+      domain: 'vimeo.com',
+      error: false,
+      title: '',
+      preview: 'https://i.vimeocdn.com/video/error.jpg'
+    };
+
+    if (res.json.request) {
+      item = Object.assign(item, {
+        url: res.json.request.files.progressive[0].url,
+        launchUrl: res.json.request['share_url'],
+        title: res.json.video.title,
+        preview: res.json.video.thumbs['960'],
+        duration: res.json.video.duration
+      });
+    } else item.error = res.json.message;
+
+    cb(item);
+  }).catch(function (err) {
+    console.error('Vimeo request via fetch failed: ' + err);
+    item.error = 'errorMsg';
+    cb(item);
+  });
 };
+
+/***/ }),
+/* 16 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = getSoundcloudUrl;
+var clientId = browser.runtime.getManifest().config['SOUNDCLOUD_CLIENT_ID'];
+
+function getSoundcloudUrl(opts, cb) {
+  console.log('optssss sc:', opts, cb);
+  var url = 'https://api.soundcloud.com/resolve.json?client_id=' + clientId + '&url=' + opts.url;
+
+  fetch(url, { method: 'GET',
+    mode: 'cors',
+    cache: 'default' }).then(function (res) {
+    var item = {
+      url: opts.url,
+      title: '',
+      preview: '',
+      duration: 0,
+      launchUrl: opts.url,
+      domain: 'soundcloud.com',
+      error: false
+    };
+
+    res.json().then(function (json) {
+      if (res.status === 429) {
+        item.error = 'errorScTrackLimit';
+      } else if (res.status === 403) {
+        item.error = 'errorScRestricted';
+      } else if (!json) {
+        item.error = 'errorScTrackConnection';
+      } else if (json.kind !== 'track') {
+        console.log(json.kind, json.streamable, json.stream_url);
+        item.error = 'errorScTrack';
+      } else if (!json.streamable) {
+        item.error = 'errorScStreamable';
+      } else {
+        item = Object.assign(item, {
+          url: json.stream_url + '?client_id=' + clientId,
+          title: json.title,
+          preview: json.artwork_url,
+          duration: json.duration * .001 // convert to seconds
+        });
+      }
+
+      cb(item);
+    });
+  }).catch(function (err) {
+    console.error('Soundcloud request via fetch failed: ' + err);
+    item.error = 'errorMsg';
+    cb(item);
+  });
+}
+
+/***/ }),
+/* 17 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+exports.default = function (msg) {
+  var title = msg.action;
+  var opts = msg;
+  if (title === 'send-to-tab') {
+    var pageUrl = opts.launchUrl ? opts.launchUrl : getPageUrl(opts.domain, opts.id, opts.time);
+    if (pageUrl) openTab(pageUrl);else {
+      console.error('could not parse page url for ', opts); // eslint-disable-line no-console
+      send({ error: 'Error loading video from ' + opts.domain });
+    }
+    send({ domain: '', src: '' });
+    closeWindow();
+  } else if (title === 'close') {
+    store.history.unshift(store.queue.shift());
+    send('set-video', { domain: '', src: '' });
+    closeWindow();
+  } else if (title === 'minimize') {
+    mvWindow.resizeTo(DEFAULT_DIMENSIONS.width, DEFAULT_DIMENSIONS.minimizedHeight);
+    mvWindow.moveBy(0, DEFAULT_DIMENSIONS.height - DEFAULT_DIMENSIONS.minimizedHeight);
+    saveLocation.screenPosition = { x: mvWindow.screenX, y: mvWindow.screenY };
+  } else if (title === 'maximize') {
+    maximize();
+  } else if (title === 'metrics-event') {
+    // Note: sending in the window ref to avoid circular imports.
+    sendMetricsData(opts.payload, mvWindow);
+  } else if (title === 'track-ended') {
+    store.history.unshift(store.queue.shift());
+    if (store.queue.length) {
+      send({
+        playing: true,
+        queue: JSON.stringify(store.queue),
+        history: JSON.stringify(store.history)
+      });
+    }
+  } else if (title === 'track-removed') {
+    if (opts.isHistory) store.history.splice(opts.index, 1);else store.queue.splice(opts.index, 1);
+
+    if (store.queue.length) {
+      send({
+        queue: JSON.stringify(store.queue),
+        history: JSON.stringify(store.history)
+      });
+    } else {
+      send({ domain: '', src: '' });
+      closeWindow();
+    }
+  } else if (title === 'track-added-from-history') {
+    // In this case we should duplicate the item from the history
+    // array.
+    store.queue.push(store.history[opts.index]);
+    sendMetricsData({
+      object: 'queue_view',
+      method: 'track-added-from-history',
+      domain: store.queue[0].domain
+    }, mvWindow);
+    send({ queue: JSON.stringify(store.queue) });
+  } else if (title === 'track-expedited') {
+    /*
+     * the goal here is to get the track index, move it to the top
+     * of the queue, and play it.
+     * We also need to handle the currently playing track correctly.
+      * If track 0 in the queue is not playing, and hasn't been
+     * played at all(currentTime == 0), we should move the newTrack
+     * to the top of the queue and play it.
+      * If track 0 in the queue is playing or has been played
+     * (currentTime > 0), we should move track 0 into the history
+     * array, and then move newTrack to the top of the queue
+     */
+    if (opts.moveIndexZero) {
+      store.history.unshift(store.queue.shift());
+      if (opts.isHistory) opts.index++;else opts.index--;
+    }
+
+    if (opts.isHistory) {
+      store.queue.unshift(store.history[opts.index]);
+    } else store.queue.unshift(store.queue.splice(opts.index, 1)[0]);
+
+    sendMetricsData({
+      object: 'queue_view',
+      method: 'track-expedited',
+      domain: store.queue[0].domain
+    }, mvWindow);
+
+    send({
+      playing: true,
+      queue: JSON.stringify(store.queue),
+      history: JSON.stringify(store.history)
+    });
+  } else if (title === 'track-reordered') {
+    var newQueue = store.queue.slice();
+    newQueue.splice(opts.newIndex, 0, newQueue.splice(opts.oldIndex, 1)[0]);
+    store.queue = newQueue;
+    sendMetricsData({
+      object: 'queue_view',
+      method: 'track-reordered',
+      domain: store.queue[0].domain
+    }, mvWindow);
+    send({ queue: JSON.stringify(store.queue) });
+  } else if (title === 'play-from-history') {
+    store.queue.splice(0);
+    store.queue = store.history.slice(0, 10);
+    send({
+      playing: true,
+      exited: false,
+      queue: JSON.stringify(store.queue),
+      history: JSON.stringify(store.history)
+    });
+  } else if (title === 'clear') {
+    sendMetricsData({
+      object: 'queue_view',
+      method: "clear:" + opts.choice,
+      domain: ''
+    }, mvWindow);
+    if (opts.choice === 'history') {
+      store.history = [];
+      send({ history: JSON.stringify(store.history) });
+    } else {
+      store.queue = [];
+      send({ domain: '', src: '', queue: JSON.stringify(store.queue) });
+      closeWindow();
+    }
+  } else if (title === 'confirm') {
+    if (opts.choice === 'playlist') {
+      _youtubeHelpers2.default.getPlaylist(opts, function (playlist) {
+
+        // if the playlist was launched on with a certain video
+        // we need to grab the playlist at that playlist
+        if (opts.index) playlist = playlist.splice(opts.index - 1);
+
+        if (opts.playerMethod === 'play') {
+          // if the 'play-now' option was selected, and min vid has a
+          // track playing we need to move that item to history before
+          // front loading the playlist results into the queue.
+          if (opts.moveIndexZero) store.history.unshift(store.queue.shift());
+          store.queue = playlist.concat(store.queue);
+        } else store.queue = store.queue.concat(playlist);
+
+        var response = {
+          trackAdded: opts.playerMethod === 'add-to-queue' && store.queue.length > 1,
+          error: false,
+          queue: JSON.stringify(store.queue),
+          history: JSON.stringify(store.history),
+          confirm: false,
+          confirmContent: '{}'
+        };
+
+        if (opts.playerMethod === 'play') response.playing = true;
+        send(response);
+      });
+    } else if (opts.choice === 'cancel') {
+      if (!store.queue.length) {
+        send({
+          domain: '',
+          src: '',
+          confirm: false,
+          confirmContent: '{}'
+        });
+        closeWindow();
+      } else {
+        send({
+          confirm: false,
+          confirmContent: '{}',
+          queue: JSON.stringify(store.queue),
+          history: JSON.stringify(store.history)
+        });
+      }
+    } else {
+      _youtubeHelpers2.default.getVideo(opts, function (video) {
+        if (opts.playerMethod === 'play') {
+          // if the 'play-now' option was selected, and min vid has a
+          // track playing we need to move that item to history before
+          // front loading the video into the queue.
+          if (opts.moveIndexZero) store.history.unshift(store.queue.shift());
+          store.queue.unshift(video);
+        } else store.queue.push(video);
+        var response = {
+          trackAdded: opts.playerMethod === 'add-to-queue' && store.queue.length > 1,
+          error: false,
+          queue: JSON.stringify(store.queue),
+          history: JSON.stringify(store.history),
+          confirm: false,
+          confirmContent: '{}'
+        };
+
+        if (opts.playerMethod === 'play') response.playing = true;
+
+        send(response);
+      });
+    }
+  }
+};
+
+var _youtubeHelpers = __webpack_require__(0);
+
+var _youtubeHelpers2 = _interopRequireDefault(_youtubeHelpers);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var port = browser.runtime.connect({ name: "connection-to-legacy" });
+
+port.onMessage.addListener(function (message) {
+  console.log("Message from legacy add-on: " + message.content);
+});
+
+
+function getPageUrl(domain, id, time) {
+  var url = void 0;
+  if (domain.indexOf('youtube') > -1) {
+    url = "https://youtube.com/watch?v=" + id + "&t=" + Math.floor(time);
+  } else if (domain.indexOf('vimeo') > -1) {
+    var min = Math.floor(time / 60);
+    var sec = Math.floor(time - min * 60);
+    url = "https://vimeo.com/" + id + "#t=" + min + "m" + sec + "s";
+  }
+
+  return url;
+}
 
 /***/ })
 /******/ ]);

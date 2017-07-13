@@ -11,6 +11,10 @@ XPCOMUtils.defineLazyModuleGetter(this, "Console",
                                   "resource://gre/modules/Console.jsm");
 XPCOMUtils.defineLazyModuleGetter(this, "Services",
                                   "resource://gre/modules/Services.jsm");
+
+
+XPCOMUtils.defineLazyModuleGetter(this, "windowUtils",
+                                  "chrome://minvid-lib/content/window-utils.js");
 // TODO: not sure we need this, see shutdown method
 // XPCOMUtils.defineLazyModuleGetter(this, "LegacyExtensionsUtils",
 //                                  "resource://gre/modules/LegacyExtensionsUtils.jsm");
@@ -38,19 +42,17 @@ function onPrefChange() {
   // TODO
 }
 
-let webextPort;
 function startup(data, reason) {
+  console.log('min-vid loading!!!!', data, reason);
+
   // If the webext is already running, bail
   if (data.webExtension.started) return;
-  // Note: data.url gives the moz-extension://[uuid]/ URL of the webextension
+  // Note: data.url gives the moz-extension://[uuid]/ URL of the
+  // webextension
   data.webExtension.startup(reason).then(api => {
-    // Set up one-way messaging, not sure we really need this (TODO)
-    api.browser.runtime.onMessage.addListener(onMessage);
-
     // Set up two-way messaging. webext must init connection.
-    api.browser.runtime.onConnect.addListener(port => {
-      webextPort = port;
-    });
+    console.log('load web ext', reason, api, data.webExtension.url);
+    api.browser.runtime.onConnect.addListener(windowUtils.initCommunication);
   });
 
 }

@@ -1,0 +1,68 @@
+{
+  "tooltip_play": {
+    "message": "Redă"
+  },
+  "tooltip_pause": {
+    "message": "Pauză"
+  },
+  "tooltip_mute": {
+    "message": "Mut"
+  },
+  "tooltip_unmute": {
+    "message": "Sunet"
+  },
+  "tooltip_send_to_tab": {
+    "message": "Trimite la filă"
+  },
+  "tooltip_minimize": {
+    "message": "Minimizează"
+  },
+  "tooltip_maximize": {
+    "message": "Maximizează"
+  },
+  "tooltip_close": {
+    "message": "Închide"
+  },
+  "tooltip_switch_visual": {
+    "message": "Clic pentru a schimba vizualizarea"
+  },
+  "media_type_audio": {
+    "message": "audio"
+  },
+  "media_type_video": {
+    "message": "video"
+  },
+  "error_msg": {
+    "message": "S-a produs o eroare cu acest video. Încearcă din nou mai târziu."
+  },
+  "error_link": {
+    "message": "Deschide într-o filă nouă"
+  },
+  "loading_view_msg": {
+    "message": "Se încarcă %s din %s"
+  },
+  "error_sc_limit": {
+    "message": "Ai atins limita pentru fluxuri Soundcloud de azi, încearcă din nou mâine."
+  },
+  "error_sc_connection": {
+    "message": "Nu s-a reușit conectarea la Soundcloud. Încearcă din nou mai târziu."
+  },
+  "error_sc_not_track": {
+    "message": "Linkul pe care l-ai trimis din Soundcloud nu este o pistă, încearcă trimiterea unei piste audio."
+  },
+  "error_sc_not_streamable": {
+    "message": "Pista pe care ai trimis-o din Soundcloud nu este redabilă, încearcă o altă pistă."
+  },
+  "error_sc_restricted": {
+    "message": "Proprietarul acestui flux a restricționat accesul la terți. Te rugăm să încerci alt flux."
+  },
+  "error_vimeo_connection": {
+    "message": "Nu s-a reușit conectarea la Vimeo. Încearcă din nou mai târziu."
+  },
+  "error_youtube_not_found": {
+    "message": "Videoclipul nu a fost găsit. Videoclipul cerut a fost fie eliminat, fie marcat ca personal."
+  },
+  "error_youtube_not_allowed": {
+    "message": "Videoclipul a fost marcat ca neîncorporabil de către proprietar. Te rugăm să încerci un alt videoclip sau să contactezi proprietarul videoclipului."
+  }
+}

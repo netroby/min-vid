@@ -1,0 +1,876 @@
+/*
+ * This Source Code is subject to the terms of the Mozilla Public License
+ * version 2.0 (the 'License'). You can obtain a copy of the License at
+ * http://mozilla.org/MPL/2.0/.
+ */
+
+html,
+body,
+#video,
+#video-yt {
+    border: none;
+    margin: 0;
+    padding: 0;
+    font-family: -apple-system, "Segoe UI", Oxygen, Ubuntu, Cantarell,
+                 "Helvetica Neue", "Lucida Grande", sans-serif;
+    font-weight: 400;
+    font-size: 14px;
+}
+
+html,
+body,
+#video,
+#video-yt,
+.player-wrap,
+.app,
+.loading,
+#container {
+    height: 100%;
+    width: 100%;
+}
+
+#container {
+    -moz-user-select: none;
+    user-select: none;
+}
+
+html,
+body,
+#video,
+#video-yt {
+    background: transparent;
+    text-align: center;
+}
+
+video#video {
+    pointer-events: none;
+}
+
+.app {
+    overflow: hidden;
+}
+
+.hidden {
+    display: none !important;
+}
+
+.loading {
+    background: #050505;
+}
+
+.loading-wrapper {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.loading img {
+    display: block;
+}
+
+.loading p {
+    color: white;
+    font-size: 19px;
+    margin-top: 0;
+    display: block;
+    padding: 21px;
+}
+
+.confirm {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+    flex-direction: column;
+
+    color: white;
+    font-size: 17px;
+    text-align: center;
+
+    background: black;
+}
+
+.btn {
+    border: 1px solid;
+    width: 70%;
+    border: 1px 1px 3px 3px;
+    border-bottom: 3px solid;
+    border-left: 3px solid;
+    padding: 5px;
+    cursor: pointer;
+
+    display: flex;
+    flex-direction: row;
+    font-size: .85em;
+
+    max-width: 300px;
+
+    text-align: center;
+}
+
+.confirm .or {
+    font-size: 0.85em;
+    margin: 5px;
+}
+
+.btn:hover {
+    color: #2388f1;
+    border-color: white;
+}
+
+.confirm .truncated {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 100%;
+}
+
+.confirm .cancel {
+    cursor: pointer;
+    font-size: .85em;
+    text-decoration: underline;
+    margin-top: 20px;
+}
+
+.confirm .cancel:hover {
+    color: #2388f1;
+}
+
+.error {
+    background-repeat: no-repeat;
+    background-size: cover;
+    background: url('img/static.png');
+    height: 100%;
+}
+
+.error-message-container {
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    flex: 1;
+}
+
+.error-message {
+    color: white;
+    font-size: 17px;
+    text-align: center;
+    -moz-user-select: none;
+    user-select: none;
+}
+
+.error-link {
+    color: white;
+    font-size: 16px;
+    text-align: center;
+    cursor: pointer;
+    text-decoration: underline;
+}
+
+.exited {
+    height: 100%;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background-size: 37%;
+    background-repeat: no-repeat;
+    background-position: 49% 72%;
+}
+
+.exited .row {
+    width: auto;
+}
+
+.exited button {
+    background-color: transparent;
+    background-repeat: no-repeat;
+    border: none;
+    cursor: pointer;
+    height: 50px;
+    margin: 20px;
+    opacity: .7;
+    padding: 30px;
+    width: 50px;
+}
+
+.exited button:hover {
+    opacity: 1;
+}
+
+.exited .exit-replay {
+    background-image: url('img/exit-replay.svg');
+}
+
+.exited .exit-close {
+    background-image: url('img/exit-close.svg');
+}
+
+.play-from-history {
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.play-from-history:hover {
+    color: #85b6f0;
+}
+
+.video-wrapper {
+    background: #000;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    position: relative;
+    width: 100%;
+}
+
+.controls {
+    background: linear-gradient(rgba(0, 0, 0, .5) 0%, rgba(0, 0, 0, .33) 70%, transparent 100%);
+    box-sizing: border-box;
+    display: flex;
+    height: 50px;
+    justify-content: space-between;
+    position: absolute;
+    padding-top: 5px;
+    transition: opacity 250ms;
+    width: 100%;
+}
+
+.controls a,
+.player-controls a {
+    display: block;
+    background-position: center center;
+    background-repeat: no-repeat;
+    cursor: pointer;
+    height: 40px;
+    opacity: .7;
+    text-decoration: none;
+    width: 40px;
+    background-size: 50%;
+}
+
+.controls a:hover,
+.player-controls a:hover {
+    opacity: 1;
+}
+
+.controls:active {
+    cursor: grabbing;
+}
+
+.controls.drag {
+    cursor: grab;
+}
+
+.controls.minimized.drag {
+    background: #000 !important;
+    display: flex !important;
+    opacity: .9;
+}
+
+.minimized .playback-button {
+    margin: -3px 35px 0 37px;
+}
+
+.minimized .prev-wrapper.hidden ~ .playback-button {
+    margin-left: 0px;
+}
+
+.minimized .prev-wrapper.hidden ~ .next-wrapper {
+    left: 45px;
+}
+
+
+.bottom-controls {
+    top: 50px;
+    position: absolute;
+    display: flex;
+    width: 100%;
+    height: 50px;
+    background: #2a2a2a;
+    opacity: 1;
+}
+
+.left,
+.right {
+    display: flex;
+    margin: 0 5px;
+}
+
+.play {
+    background: url('img/play.svg');
+}
+
+.repeat {
+    background: url('img/repeat.svg');
+}
+
+.pause {
+    background: url('img/pause.svg');
+}
+
+.mute {
+    background: url('img/unmute.svg');
+}
+
+.unmute {
+    background: url('img/mute.svg');
+}
+
+.tab {
+    background: url('img/to-tab.svg');
+}
+
+.minimize {
+    background: url('img/minimize.svg');
+}
+
+.maximize {
+    background: url('img/maximize.svg');
+}
+
+.close {
+    background: url('img/close.svg');
+}
+
+.open-queue {
+    background: url('img/open-menu.svg');
+}
+
+.volume {
+    background: #222;
+    opacity: .9;
+    border-radius: 4px;
+    width: 22px;
+    height: 81px;
+    position: absolute;
+    bottom: 35px;
+    left: 13px;
+}
+
+.volume input {
+    border-radius: 6px;
+    cursor: pointer;
+    height: 65px;
+    margin-top: 8px;
+    width: 6px;
+}
+
+.volume input::-moz-range-track {
+    background: #eeeeeecc;
+    border-radius: 5px;
+    border: none;
+    height: 65px;
+    width: 5px;
+}
+
+.volume input::-moz-range-progress {
+    background: #4789d7;
+    border-radius: 5px;
+    width: 5px;
+}
+
+.volume input::-moz-range-thumb {
+    background: white;
+    border-radius: 50%;
+    border: none;
+    height: 15px;
+    width: 15px;
+}
+
+/*hide the outline behind the border*/
+.volume input:-moz-focusring {
+    outline: none;
+}
+
+input[type=range]::-moz-focus-outer {
+    border: 0;
+}
+
+/* Volume control minimized */
+.minimized .sound-control a {
+    margin-top: -3px;
+}
+
+.minimized .volume {
+    width: 85px;
+    height: 20px;
+    position: absolute;
+    bottom: 20px;
+    left: 35px;
+    background: none;
+}
+
+.minimized .volume input {
+    width: 65px;
+    height: 6px;
+}
+
+.minimized .volume input::-moz-range-progress {
+    height: 5px;
+}
+
+.minimized .volume input::-moz-range-track {
+    width: 65px;
+    height: 5px;
+}
+.minimized .left,
+.minimized .right {
+    z-index: 100;
+}
+
+.progress {
+    box-sizing: border-box;
+    height: 50px;
+    padding-top: 6px;
+    width: 100%;
+    cursor: pointer;
+}
+
+.minimized .progress {
+    height: 6px;
+    top: -2px;
+}
+
+.progress.peek {
+    background: transparent;
+    position: absolute;
+}
+
+.progress span {
+    color: white;
+    opacity: 1;
+}
+
+.minimized .progress.peek {
+    z-index: 101;
+    bottom: 2px;
+}
+
+.video-progress {
+    background: #ffffffaa;
+    border: none;
+    border-radius: 5px;
+    height: 10px;
+    margin-top: 6px;
+    margin-bottom: 14px;
+    overflow: hidden;
+    width: 95%;
+}
+
+.peek .video-progress {
+    border-radius: 0;
+    margin-top: 40px;
+    width: 100%;
+}
+
+.video-progress[value]::-moz-progress-bar {
+    appearance: none;
+    background: #4789d7;
+    border: none;
+}
+
+.time {
+    color: white;
+    float: right;
+    padding-right: 15px;
+}
+
+.domain {
+    color: white;
+    float: left;
+    padding-left: 15px;
+}
+
+.controls:hover .volume {
+    display: inline-block;
+}
+
+.pointer {
+    cursor: pointer;
+}
+
+canvas {
+    width: 100%;
+    height: 100%;
+}
+
+
+
+
+/* asdjfldsfkl */
+
+#audio-container {
+    height: 100%;
+}
+
+#audio-container canvas {
+    position: static !important;
+}
+
+.queue {
+    
+}
+
+.queues {
+    width: 75%;
+    height: 100%;
+    padding: 0;
+    margin: 0;
+
+    position: absolute;
+    right: 0;
+
+    background: #050505;
+    color: white;
+
+    box-shadow: inset -1px -10px 10px 0px rgba(50, 50, 50, 0.75);
+}
+
+.queue-headers > li {
+    display: inline-block;
+    margin: 0 25px 0 0px;
+    color: #878787;
+    cursor: pointer;
+}
+
+.queue-headers > li:hover {
+    color: white;
+}
+
+.queue-headers > li h3 {
+    padding-bottom: 6px;
+    margin-bottom: 10px;
+    font-weight: 400;
+}
+
+.queue-headers > li.active h3 {
+    color: white;
+    border-bottom: 2px solid #4a90e2;
+}
+
+.queues ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.queues .panel-wrapper li {
+    display: flex;
+    flex-direction: row;
+    padding: 1px 2px;
+    background-color: #050505;
+    width: 100%;
+}
+
+.queues .panel-wrapper.panel-queue li:first-child {
+    background: #363636;
+}
+
+.queues .panel-wrapper li:hover {
+    background: #4a4a4a;
+}
+
+.queues .panel-wrapper.panel-history li:hover .add-from-history{
+    opacity: .7;
+}
+
+.queues .panel-wrapper li h5 {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 75%;
+    margin: 5px;
+    text-align: left;
+}
+
+.queue-item-domain {
+    font-size: 10px;
+    margin: 0px 10px 0px 5px;
+}
+
+.queue-item-info {
+    position: relative;
+    min-width: 200px;
+    width: 100%;
+}
+
+.queue-item-remove {
+    background: url(./img/close.svg);
+    display: block;
+    background-position: center center;
+    background-repeat: no-repeat;
+    cursor: pointer;
+    height: 12px;
+    opacity: .7;
+    text-decoration: none;
+    width: 12px;
+    position: absolute;
+    right: 15px;
+    top: 12px;
+    background-size: contain;
+}
+
+.queue-item-remove:hover {
+    opacity: 1;
+}
+
+.queue-item-thumbnail {
+    width: 55px;
+    height: 40px;
+
+    padding: 0 3px;
+}
+
+.queue-item-left img,
+.queue-item-left p {
+    padding: 1px 5px;
+    margin: 0;
+    width: 25px;
+}
+
+.queue-item-left img {
+    width: 15px;
+    padding: 1px 10px;
+}
+
+.queue-item-thumbnail {
+    position: relative;
+}
+
+.queue-item-thumbnail div {
+    background-size: 70px;
+    background-position: 50%;
+
+    width: 50px;
+    height: 100%;
+}
+
+.queue-item-thumbnail .play,
+.queue-item-thumbnail .repeat {
+    display: block;
+    background-position: center center;
+    background-repeat: no-repeat;
+    cursor: pointer;
+    height: 15px;
+    width: 15px;
+    opacity: .9;
+    text-decoration: none;
+    background-size: contain;
+
+    position: absolute;
+    top: 33%;
+    left: 37%;
+}
+
+.queues li span {
+    font-size: 10px;
+    float: left;
+}
+
+.queue-item-left {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.queue-item-left .drag-handle {
+    position: absolute;
+    top: 2px;
+    left: 35%;
+    cursor: move;
+    background: url(./img/drag.svg);
+    background-repeat: no-repeat;
+    width: 25px;
+    height: 10px;
+    margin-left: -3px;
+}
+
+.panel-wrapper {
+    overflow-y: scroll;
+    overflow-x: hidden;
+    height: 75%;
+}
+
+.player-controls {
+    width: 100%;
+    height: 50px;
+    padding: 6px 0px 5px 0px;
+    position: absolute;
+    bottom: 0;
+    display: flex;
+    flex-direction: row;
+}
+
+
+.player-controls.hovered,
+.player-controls.minimized {
+    background: linear-gradient(to top, rgba(0, 0, 0, .5) 0%, rgba(0, 0, 0, .33) 70%, transparent 100%);
+}
+
+.sound-control a,
+.player-controls a {
+    align-items: center;
+    display: flex;
+    margin: 12px 5px 0 5px;
+}
+
+.sound-control {
+    position: relative;
+    margin-right: 10px;
+}
+
+.minimized .sound-control {
+    margin-right: 73px;
+}
+
+.collapse-queue {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+
+
+    display: block;
+
+    background: url(./img/close-menu.svg);    
+    background-size: contain;   
+    background-position: center center;
+    background-repeat: no-repeat;
+
+    cursor: pointer;
+
+    height: 20px;
+    width: 20px;
+
+    opacity: .7;
+    text-decoration: none;    
+}
+
+.collapse-queue:hover {
+    opacity: .9;
+}
+
+.ended-dialog {
+    color: white;
+}
+
+.ended-dialog p {
+    margin: 0;
+}
+
+.ended-dialog h4 {
+    margin: 5px;
+}
+
+.next-wrapper,
+.prev-wrapper {
+    position: absolute;
+
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+}
+
+.prev-wrapper {
+    left: 7px;
+}
+
+.video-wrapper > .next-wrapper {
+    right: 7px;
+}
+
+.minimized .next-wrapper {
+    left: 82px;
+    margin-top: -8px;
+}
+
+.minimized .prev-wrapper {
+ 	margin-top: -8px;   
+}
+
+.prev-wrapper a {
+    background: url('img/prev.svg');
+}
+
+.next-wrapper a {
+    background: url('img/next.svg');
+}
+
+.next-wrapper a,
+.prev-wrapper a {
+    display: block;
+    background-position: center center;
+    background-repeat: no-repeat;
+    cursor: pointer;
+    height: 33.6px;
+    opacity: .7;
+    text-decoration: none;
+    width: 36px;
+    background-size: 50%;
+
+    background-repeat: no-repeat;
+    background-position: 50%;
+}
+
+.next-wrapper a:hover,
+.prev-wrapper a:hover {
+    opacity: 1
+}
+
+.clear {
+    padding: 10px;
+    border-top: 1px solid #363636;
+}
+
+.clear a {
+    cursor: pointer;
+    color: #878787;
+}
+
+.clear a:hover {
+    color: white;
+}
+
+.add-from-history {
+    cursor: pointer;
+    opacity: .2;
+}
+
+.add-from-history:hover {
+    opacity: 1 !important;
+}
+
+.notification {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: auto;
+    width: 130px;
+    height: 16px;
+    background: #000000b3;
+    color: white;
+    border-radius: 12px;
+    padding: 5px;
+    font-size: 12px;
+    opacity: 0;
+}
+
+.fade-in-out {
+    animation: fade-in-out-animation 3s;
+}
+
+@keyframes fade-in-out-animation {
+    0% {opacity:0;}
+    50% {opacity:1;}
+    100% {opacity:0;}
+}

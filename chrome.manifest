@@ -1,2 +1,3 @@
 content minvid-ostypes lib/vendor/noitidart-ostypes/
 content minvid-lib lib/
+content minvid-data chrome/content/

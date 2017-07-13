@@ -1,0 +1,110 @@
+{
+  "tooltip_play": {
+    "message": "Играть"
+  },
+  "tooltip_pause": {
+    "message": "Пауза"
+  },
+  "tooltip_mute": {
+    "message": "Выключить звук"
+  },
+  "tooltip_unmute": {
+    "message": "Включить звук"
+  },
+  "tooltip_next": {
+    "message": "Следующее"
+  },
+  "tooltip_previous": {
+    "message": "Предыдущее"
+  },
+  "tooltip_send_to_tab": {
+    "message": "Отправить на вкладку"
+  },
+  "tooltip_minimize": {
+    "message": "Свернуть"
+  },
+  "tooltip_maximize": {
+    "message": "Развернуть"
+  },
+  "tooltip_close": {
+    "message": "Закрыть"
+  },
+  "tooltip_switch_visual": {
+    "message": "Щёлкните для переключения визуализации"
+  },
+  "tooltip_open_queue": {
+    "message": "Открыть очередь"
+  },
+  "tooltip_close_queue": {
+    "message": "Закрыть очередь"
+  },
+  "media_type_audio": {
+    "message": "аудио"
+  },
+  "media_type_video": {
+    "message": "видео"
+  },
+  "play_now": {
+    "message": "Играть сейчас"
+  },
+  "add_to_queue": {
+    "message": "Добавить в очередь"
+  },
+  "clear": {
+    "message": "Очистить"
+  },
+  "history": {
+    "message": "История"
+  },
+  "play_queue": {
+    "message": "Играть очередь"
+  },
+  "item_added_notification": {
+    "message": "Элемент добавлен в очередь"
+  },
+  "end_of_queue": {
+    "message": "Больше нет элементов в очереди"
+  },
+  "error_msg": {
+    "message": "Что-то пошло не так с этим видео. Повторите попытку позже."
+  },
+  "error_link": {
+    "message": "Открыть в новой вкладке"
+  },
+  "loading_view_msg": {
+    "message": "Загрузка %s из %s"
+  },
+  "confirm_msg": {
+    "message": "Что вы хотите сделать?"
+  },
+  "add_confirm_msg": {
+    "message": "Добавить"
+  },
+  "play_confirm_msg": {
+    "message": "Играть"
+  },
+  "error_sc_limit": {
+    "message": "Вы исчерпали лимит стримов Soundcloud на сегодня, пожалуйста, попробуйте завтра."
+  },
+  "error_sc_connection": {
+    "message": "Не удалось подключиться к Soundcloud. Пожалуйста, попробуйте позже."
+  },
+  "error_sc_not_track": {
+    "message": "Ссылка, которую вы отправили из Soundcloud не является треком, попробуйте отправить аудио-трек."
+  },
+  "error_sc_not_streamable": {
+    "message": "Трек, который вы отправили из Soundcloud не вещается, попробуйте другой трек."
+  },
+  "error_sc_restricted": {
+    "message": "Издатель этого трека ограничил доступ для третих сторон, попробуйте открыть другой трек."
+  },
+  "error_vimeo_connection": {
+    "message": "Не удалось подключиться к Vimeo. Пожалуйста, попробуйте позже."
+  },
+  "error_youtube_not_found": {
+    "message": "Видео не найдено. Видео, которое вы запросили, было либо удалено, либо помечено как приватное."
+  },
+  "error_youtube_not_allowed": {
+    "message": "Это видео был помечено владельцем как невстраиваемое. Пожалуйста, попробуйте другое видео, или обратитесь к издателю видео."
+  }
+}

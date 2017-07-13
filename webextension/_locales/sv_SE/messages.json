@@ -1,0 +1,110 @@
+{
+  "tooltip_play": {
+    "message": "Spela"
+  },
+  "tooltip_pause": {
+    "message": "Pausa"
+  },
+  "tooltip_mute": {
+    "message": "Ljud av"
+  },
+  "tooltip_unmute": {
+    "message": "Ljud på"
+  },
+  "tooltip_next": {
+    "message": "Nästa"
+  },
+  "tooltip_previous": {
+    "message": "Föregående"
+  },
+  "tooltip_send_to_tab": {
+    "message": "Skicka till flik"
+  },
+  "tooltip_minimize": {
+    "message": "Minimera"
+  },
+  "tooltip_maximize": {
+    "message": "Maximera"
+  },
+  "tooltip_close": {
+    "message": "Stäng"
+  },
+  "tooltip_switch_visual": {
+    "message": "Klicka för att växla visualisering"
+  },
+  "tooltip_open_queue": {
+    "message": "Öppna kö"
+  },
+  "tooltip_close_queue": {
+    "message": "Stäng kö"
+  },
+  "media_type_audio": {
+    "message": "ljud"
+  },
+  "media_type_video": {
+    "message": "video"
+  },
+  "play_now": {
+    "message": "Spela nu"
+  },
+  "add_to_queue": {
+    "message": "Lägg till i kö"
+  },
+  "clear": {
+    "message": "Rensa"
+  },
+  "history": {
+    "message": "Historik"
+  },
+  "play_queue": {
+    "message": "Spela kö"
+  },
+  "item_added_notification": {
+    "message": "Objekt tillagd i kö"
+  },
+  "end_of_queue": {
+    "message": "Det finns inga fler objekt i kön"
+  },
+  "error_msg": {
+    "message": "Något har gått fel med denna video. Försök igen senare."
+  },
+  "error_link": {
+    "message": "Öppna in ny flik"
+  },
+  "loading_view_msg": {
+    "message": "Laddar %s från %s"
+  },
+  "confirm_msg": {
+    "message": "Vad vill du göra?"
+  },
+  "add_confirm_msg": {
+    "message": "Lägg till"
+  },
+  "play_confirm_msg": {
+    "message": "Spela"
+  },
+  "error_sc_limit": {
+    "message": "Du har nått gränsen för strömmar på Soundcloud för idag, försök igen i morgon."
+  },
+  "error_sc_connection": {
+    "message": "Kunde inte ansluta till Soundcloud. Försök igen senare."
+  },
+  "error_sc_not_track": {
+    "message": "Länken du har skickat från Soundcloud är inte ett spår, prova att skicka ett ljudspår."
+  },
+  "error_sc_not_streamable": {
+    "message": "Det spår som du har skickat från Soundcloud kan inte strömmas, prova ett annat spår."
+  },
+  "error_sc_restricted": {
+    "message": "Utgivaren av denna låt har begränsad tillgång till tredje part, prova ett annat spår."
+  },
+  "error_vimeo_connection": {
+    "message": "Kunde inte ansluta till Vimeo. Försök igen senare."
+  },
+  "error_youtube_not_found": {
+    "message": "Videon hittades inte. Videon du har begärt har antingen tagits bort eller markerats privat."
+  },
+  "error_youtube_not_allowed": {
+    "message": "Denna video har markerats som icke inbäddningsbar av ägaren. Försök med en annan video eller kontakta utgivaren."
+  }
+}
