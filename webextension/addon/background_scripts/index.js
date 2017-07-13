@@ -80,6 +80,14 @@ var _iso8601Duration = __webpack_require__(10);
 
 var apiKey = browser.runtime.getManifest().config['YOUTUBE_DATA_API_KEY'];
 
+console.log('yt api key', apiKey);
+
+var headers = new Headers({
+  'Accept': 'application/json',
+  'Content-Type': 'application/json',
+  'Content-Length': content.length.toString()
+});
+
 exports.default = {
   getVideo: getVideo,
   getPlaylist: getPlaylist,
@@ -98,8 +106,10 @@ function getVideo(opts, cb) {
 
   fetch(url, { method: 'GET',
     mode: 'cors',
+    headers: headers,
     cache: 'default' }).then(function (res) {
     return res.json().then(function (json) {
+      console.log('my result json', json);
       var result = json.items;
       var item = {
         cc: opts.cc,
@@ -117,13 +127,16 @@ function getVideo(opts, cb) {
       var url = 'https://www.youtube.com/get_video_info?video_id=' + opts.videoId;
       fetch(url, { method: 'GET',
         mode: 'cors',
+        headers: headers,
         cache: 'default' }).then(function (res) {
-        var result = (0, _querystring.parse)(res.text);
-        if (result.status === 'fail') {
-          if (result.reason.indexOf('restricted')) item.error = 'error_youtube_not_allowed';else item.error = 'error_youtube_not_found';
-        }
+        return res.text().then(function (text) {
+          var result = (0, _querystring.parse)(text);
+          if (result.status === 'fail') {
+            if (result.reason.indexOf('restricted')) item.error = 'error_youtube_not_allowed';else item.error = 'error_youtube_not_found';
+          }
 
-        cb(item);
+          cb(item);
+        });
       });
     });
   });
@@ -139,6 +152,7 @@ function getPlaylistMeta(opts, cb) {
   var url = 'https://www.googleapis.com/youtube/v3/playlists?' + query;
   fetch(url, { method: 'GET',
     mode: 'cors',
+    headers: headers,
     cache: 'default' }).then(function (res) {
     return res.json().then(function (json) {
       var result = json.items[0].snippet;
@@ -150,6 +164,7 @@ function getPlaylistMeta(opts, cb) {
       var url = 'https://www.googleapis.com/youtube/v3/videos?' + query;
       fetch(url, { method: 'GET',
         mode: 'cors',
+        headers: headers,
         cache: 'default' }).then(function (res) {
         return res.json().then(function (json) {
           cb(Object.assign(opts, {
@@ -174,6 +189,7 @@ function getPlaylist(opts, cb, passedPlaylist) {
   var url = 'https://www.googleapis.com/youtube/v3/playlistItems?' + query;
   fetch(url, { method: 'GET',
     mode: 'cors',
+    headers: headers,
     cache: 'default' }).then(function (res) {
     return res.json().then(function (json) {
       var result = json;
@@ -227,6 +243,7 @@ exports.stringify = stringify;
 
 function parse(qs) {
   var result = {};
+  console.log('q s    :', qs);
   var idx = qs.indexOf('?');
   qs.substr(idx + 1).split('&').map(function (a) {
     return a.split('=');
@@ -237,7 +254,7 @@ function parse(qs) {
 }
 
 function stringify(params) {
-  return '?' + Object.keys(params).map(function (k) {
+  return Object.keys(params).map(function (k) {
     return k + '=' + params[k];
   }).join('&');
 }
@@ -451,8 +468,6 @@ var _isAudio2 = _interopRequireDefault(_isAudio);
 
 var _windowMessages = __webpack_require__(9);
 
-var _windowMessages2 = _interopRequireDefault(_windowMessages);
-
 var _youtubeHelpers = __webpack_require__(0);
 
 var _youtubeHelpers2 = _interopRequireDefault(_youtubeHelpers);
@@ -521,7 +536,7 @@ function launchVideo(opts) {
 
   console.log('launch locales', opts.domain, isAudio(opts.url));
 
-  _windowMessages2.default.send(opts = Object.assign({
+  (0, _windowMessages.send)(opts = Object.assign({
     id: (0, _v2.default)(),
     width: storage.width,
     height: storage.height,
@@ -552,7 +567,7 @@ function launchVideo(opts) {
         });
         // TODO: figure out isMINIMIZED
         // if (windowUtils.isMinimized()) windowUtils.maximize();
-        _windowMessages2.default.send(Object.assign(opts, {
+        (0, _windowMessages.send)(Object.assign(opts, {
           confirm: true,
           error: false,
           minimized: false,
@@ -582,7 +597,7 @@ function launchVideo(opts) {
         });
 
         if (action === 'play') response.playing = true;
-        _windowMessages2.default.send(response);
+        (0, _windowMessages.send)(response);
       });
     }
   } else {
@@ -602,8 +617,7 @@ function launchVideo(opts) {
       };
 
       if (action === 'play') videoOptions.playing = true;
-      console.log('did it make it here????', videoOptions);
-      _windowMessages2.default.send(videoOptions);
+      (0, _windowMessages.send)(videoOptions);
     });
   }
 }
@@ -817,9 +831,13 @@ function isAudio(src) {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+exports.send = send;
+exports.close = close;
+
 var port = browser.runtime.connect({ name: "connection-to-legacy" });
 
 function send(data) {
+  console.log('window-messages:send:', data);
   port.postMessage({
     content: 'window:send',
     data: data
@@ -833,8 +851,6 @@ function close() {
     content: 'window:close'
   });
 }
-
-exports.default = { send: send, close: close };
 
 /***/ }),
 /* 10 */
