@@ -1,7 +1,7 @@
 import { parse } from './querystring';
 import getVideoId from 'get-video-id';
 import isAudioFile from './is-audio';
-import windowMessages from './window-messages';
+import { send } from './window-messages';
 import youtubeHelpers from './youtube-helpers';
 import sendMetricsData from './send-metrics-data';
 // import getLocaleStrings from './get-locale-strings';
@@ -61,7 +61,7 @@ export default function launchVideo(opts) {
 
   console.log('launch locales', opts.domain, isAudio(opts.url));
 
-  windowMessages.send(opts = Object.assign({
+  send(opts = Object.assign({
     id: uuid(),
     width: storage.width,
     height: storage.height,
@@ -92,7 +92,7 @@ export default function launchVideo(opts) {
         });
         // TODO: figure out isMINIMIZED
         // if (windowUtils.isMinimized()) windowUtils.maximize();
-        windowMessages.send(Object.assign(opts, {
+        send(Object.assign(opts, {
           confirm: true,
           error: false,
           minimized: false,
@@ -122,7 +122,7 @@ export default function launchVideo(opts) {
         });
 
         if (action === 'play') response.playing = true;
-        windowMessages.send(response);
+        send(response);
       });
     }
   } else {
@@ -152,8 +152,7 @@ export default function launchVideo(opts) {
       };
 
       if (action === 'play') videoOptions.playing = true;
-      console.log('did it make it here????', videoOptions);
-      windowMessages.send(videoOptions);
+      send(videoOptions);
     });
   }
 }

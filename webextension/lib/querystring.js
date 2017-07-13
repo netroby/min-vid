@@ -2,6 +2,7 @@ export {parse, stringify};
 
 function parse(qs) {
   let result = {};
+  console.log('q s    :', qs);
     const idx = qs.indexOf('?');
     qs.substr(idx+1).split('&')
       .map(a => a.split('='))
@@ -10,5 +11,5 @@ function parse(qs) {
 }
 
 function stringify(params) {
-  return '?' + Object.keys(params).map(k => `${k}=${params[k]}`).join('&');
+  return Object.keys(params).map(k => `${k}=${params[k]}`).join('&');
 }

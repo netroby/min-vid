@@ -3,7 +3,7 @@ const PREF_BRANCH = "extensions.@minvid.";
 const WIDTH_PREF = "width";
 const HEIGHT_PREF = "height";
 
-const { interfaces: Ci, utils: Cu } = Components;
+const { utils: Cu } = Components;
 Cu.import("resource://gre/modules/XPCOMUtils.jsm");
 XPCOMUtils.defineLazyModuleGetter(this, "AddonManager",
                                   "resource://gre/modules/AddonManager.jsm");
@@ -13,8 +13,9 @@ XPCOMUtils.defineLazyModuleGetter(this, "Services",
                                   "resource://gre/modules/Services.jsm");
 
 
-XPCOMUtils.defineLazyModuleGetter(this, "windowUtils",
-                                  "chrome://minvid-lib/content/window-utils.js");
+// XPCOMUtils.defineLazyModuleGetter(this, "WindowUtils",
+Cu.import("chrome://minvid-lib/content/window-utils.js");
+
 // TODO: not sure we need this, see shutdown method
 // XPCOMUtils.defineLazyModuleGetter(this, "LegacyExtensionsUtils",
 //                                  "resource://gre/modules/LegacyExtensionsUtils.jsm");
@@ -52,9 +53,11 @@ function startup(data, reason) {
   data.webExtension.startup(reason).then(api => {
     // Set up two-way messaging. webext must init connection.
     console.log('load web ext', reason, api, data.webExtension.url);
-    api.browser.runtime.onConnect.addListener(windowUtils.initCommunication);
+    api.browser.runtime.onConnect.addListener(port => {
+      console.log('bootstraped:', port, WindowUtils);
+      WindowUtils.create(port);
+    });
   });
-
 }
 
 function onMessage(msg, sender, sendReply) {
