@@ -1,0 +1,110 @@
+{
+  "tooltip_play": {
+    "message": "Urar"
+  },
+  "tooltip_pause": {
+    "message": "Serju"
+  },
+  "tooltip_mute": {
+    "message": "Qemmem"
+  },
+  "tooltip_unmute": {
+    "message": "Susem"
+  },
+  "tooltip_next": {
+    "message": "Ɣer zdat"
+  },
+  "tooltip_previous": {
+    "message": "Ɣeṛ deffir"
+  },
+  "tooltip_send_to_tab": {
+    "message": "Azen ar yiccer"
+  },
+  "tooltip_minimize": {
+    "message": "Semẓi"
+  },
+  "tooltip_maximize": {
+    "message": "Semɣeṛ"
+  },
+  "tooltip_close": {
+    "message": "Mdel"
+  },
+  "tooltip_switch_visual": {
+    "message": "Sit akken ad tesnifled taskant"
+  },
+  "tooltip_open_queue": {
+    "message": "Ldi tabdart n tɣuri"
+  },
+  "tooltip_close_queue": {
+    "message": "Mdel tabdart n tɣuri"
+  },
+  "media_type_audio": {
+    "message": "imesli"
+  },
+  "media_type_video": {
+    "message": "Vidyu"
+  },
+  "play_now": {
+    "message": "Urar tura"
+  },
+  "add_to_queue": {
+    "message": "Rnu ar udras"
+  },
+  "clear": {
+    "message": "Sfeḍ"
+  },
+  "history": {
+    "message": "Amazray"
+  },
+  "play_queue": {
+    "message": "Adras"
+  },
+  "item_added_notification": {
+    "message": "Aferdis yettwarna ar udras"
+  },
+  "end_of_queue": {
+    "message": "Ulac iferdisen deg udras"
+  },
+  "error_msg": {
+    "message": "Yella wayen ur yeddan ara akken iwata di tvidyut-agi. Ɛreḍ tikelt-nniḍen ticki."
+  },
+  "error_link": {
+    "message": "Ldi-t deg yiccer amaynut"
+  },
+  "loading_view_msg": {
+    "message": "Asal n %s si %s"
+  },
+  "confirm_msg": {
+    "message": "Acu tebɣiḍ ad ad teggeḍ?"
+  },
+  "add_confirm_msg": {
+    "message": "Rnu"
+  },
+  "play_confirm_msg": {
+    "message": "Urar"
+  },
+  "error_sc_limit": {
+    "message": "Tewwḍeḍ ɣer talast n tɣuri Soundcloud ass-a, ɛreḍ azekka."
+  },
+  "error_sc_connection": {
+    "message": "Ulamek teqqned ɣer Soundcloud. Ɛreḍ tikelt nniḍen."
+  },
+  "error_sc_not_track": {
+    "message": "Aseɣwen i d-tuzneḍ si Soundcloud mačči d afaylu ameslaw, ttxil ɛreḍ afaylu amaslaw."
+  },
+  "error_sc_not_streamable": {
+    "message": "Aseɣwen d-tuzneḍ si Soundcloud mačči d afaylu ameslaw, ttxil ɛreḍ afaylu amaslaw."
+  },
+  "error_sc_restricted": {
+    "message": "Amazrag n tfuɣalt-agi isuref anekcum i wiyid εreḍ tafuɣalt nniḍen."
+  },
+  "error_vimeo_connection": {
+    "message": "Ulamek teqqned ɣer Vimeo. Ɛreḍ tikkelt-nniḍen."
+  },
+  "error_youtube_not_found": {
+    "message": "Ulac tavidyut. Tavidyut i d-sutreḍ tettwakkes neɣ d tusligt."
+  },
+  "error_youtube_not_allowed": {
+    "message": "Tavidyut-agi yemmel-att-id bab-is d akken ur tezmir ara ad tettwasleɣ anida-nniḍen. Ma ulac aɣilif, ɛreḍ tavidyut-nniḍen neɣ nermes amaẓrag."
+  }
+}

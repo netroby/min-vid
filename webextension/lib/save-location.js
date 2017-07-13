@@ -11,7 +11,7 @@ export default class Location {
 
   set screenPosition(pos) {
     _screenPosition = pos;
-    browser.storage.local.set('screenPosition', pos)
+    browser.storage.local.set({'screenPosition', pos})
   }
 
   // Called on uninstall to clear out storage

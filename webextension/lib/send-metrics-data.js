@@ -1,15 +1,19 @@
 const storage = browser.storage.local;
-const manifest = require('../package.json');
-
+const version = browser.runtime.getManifest().version;
+const trackingId = browser.runtime.getManifest().config['GA_TRACKING_ID'];
 const GA_URL = 'https://ssl.google-analytics.com/collect';
 
-export function sendMetricsData(o, win) {
+export default function sendMetricsData(o, win) {
   // Note: window ref is optional, used to avoid circular refs with window-utils.js.
-  win = win || require('./window-utils.js').getWindow();
+  win = win;//  || require('./window-utils.js').getWindow();
 
   if (!win || win.incognito) return;
 
-  const coords = win.document.documentElement.getBoundingClientRect();
+
+
+
+  // TODO: WINDOW UTILS GET COORDS will replace this
+  // const coords = win.document.documentElement.getBoundingClientRect();
 
   // NOTE: this packet follows a predefined data format and cannot be changed
   //       without notifying the data team. See docs/metrics.md for more.
@@ -17,16 +21,16 @@ export function sendMetricsData(o, win) {
     v: 1,
     aip: 1, // anonymize user IP addresses (#24 mozilla/testpilot-metrics)
     an: browser.runtime.id,
-    av: manifest.version,
-    tid: manifest.config['GA_TRACKING_ID'],
+    av: version,
+    tid: trackingId,
     cid: storage.clientUUID,
     t: 'event',
     ec: o.category,
     ea: o.method,
-    cd2: coords.left, // video_x
-    cd3: coords.top, // video_y
-    cd4: coords.width,
-    cd5: coords.height,
+    // cd2: coords.left, // video_x
+    // cd3: coords.top, // video_y
+    // cd4: coords.width,
+    // cd5: coords.height,
     cd6: o.domain,
     el: o.object
   }).map(item => encodeURIComponent(item) + '=' + encodeURIComponent(obj[item]))

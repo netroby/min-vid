@@ -2,12 +2,19 @@ const host = window.location.host;
 let availableMetricSent = false;
 let overlayCheckInterval;
 
+console.log('HEEEYYY, icon-overlay.js addListener');
 browser.runtime.onMessage.addListener(onMessage);
 
+window.strings = {
+  playNow: 'Play Now',
+  add: 'Add to queue'
+};
+
 function onMessage(opts) {
+  console.log('HEEEYYY, icon-overlay.js this is the listerne');
   const title = opts.title;
   delete opts.title;
-
+  injectStyle();
   if (title === 'receive-strings') {
     window.strings = strings;
     checkForEmbeds();
@@ -18,6 +25,10 @@ function onMessage(opts) {
       .forEach(removeOverlay);
   }
 }
+
+injectStyle();
+checkForEmbeds();
+overlayCheckInterval = setInterval(checkForEmbeds, 3000);
 
 function removeOverlay(el) {
   el.classList.remove('minvid__overlay__wrapper');
@@ -281,7 +292,7 @@ function sendMetric(method) {
   browser.runtime.sendMessage({
     title: 'metric',
     object: 'overlay_icon',
-    method
+    method: method
   });
 }
 
@@ -294,4 +305,81 @@ function closeFullscreen() {
   if (document.mozFullScreenEnabled) {
     document.mozCancelFullScreen();
   }
+}
+
+function injectStyle() {
+  const css = `
+.minvid__overlay__container {
+    align-items: center;
+    background-color: rgba(0,0,0,0.8);
+    opacity: 0;
+    border-radius: 0 0 4px 4px;
+    height: 100%;
+    justify-content: center;
+    left: 4%;
+    max-height: 80px;
+    max-width: 36px;
+    padding: 2px 2px 4px;
+    position: absolute;
+    top: 0;
+    width: 100%;
+    z-index: 999999;
+}
+
+.minvid__overlay__container:hover {
+    background: rgba(0,0,0,0.9);
+}
+
+.minvid__overlay__icon {
+    display: block;
+    cursor: pointer;
+    height: 40%;
+    opacity: 0.7;
+    width: 100%;
+}
+#minvid__overlay__icon__play {
+    background: url('img/overlay-player-icon.svg') no-repeat;
+    background-position: center bottom;
+    background-size: 32px auto;
+}
+
+#minvid__overlay__icon__add {
+    background: url('img/add.svg') no-repeat;
+    background-position: center bottom;
+    background-size: 25px auto;
+    margin-top: 5px;
+}
+
+.minvid__overlay__wrapper:hover .minvid__overlay__container {
+    opacity: 1;
+    /*background-color: rgba(0, 0, 0, .8);*/
+    /*animation-name: fade;
+    animation-duration: 4s;
+    animation-iteration-count: initial;
+    animation-fill-mode: forwards;*/
+}
+
+#minvid__overlay__icon__play:hover,
+#minvid__overlay__icon__add:hover {
+    opacity: 1;
+}
+
+@keyframes fade {
+  0%   {opacity: 0}
+  5%, 80% {opacity: 1}
+  100% {opacity: 0}
+}
+  `;
+
+  let head = document.head;
+  let style = document.createElement('style');
+
+  style.type = 'text/css';
+  if (style.styleSheet){
+    style.styleSheet.cssText = css;
+  } else {
+    style.appendChild(document.createTextNode(css));
+  }
+
+  head.appendChild(style);
 }

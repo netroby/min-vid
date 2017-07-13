@@ -1,0 +1,110 @@
+{
+  "tooltip_play": {
+    "message": "再生"
+  },
+  "tooltip_pause": {
+    "message": "一時停止"
+  },
+  "tooltip_mute": {
+    "message": "消音"
+  },
+  "tooltip_unmute": {
+    "message": "消音解除"
+  },
+  "tooltip_next": {
+    "message": "次へ"
+  },
+  "tooltip_previous": {
+    "message": "前へ"
+  },
+  "tooltip_send_to_tab": {
+    "message": "タブへ送る"
+  },
+  "tooltip_minimize": {
+    "message": "最小化"
+  },
+  "tooltip_maximize": {
+    "message": "最大化"
+  },
+  "tooltip_close": {
+    "message": "閉じる"
+  },
+  "tooltip_switch_visual": {
+    "message": "クリックして視覚化を切り替え"
+  },
+  "tooltip_open_queue": {
+    "message": "キューを開く"
+  },
+  "tooltip_close_queue": {
+    "message": "キューを閉じる"
+  },
+  "media_type_audio": {
+    "message": "音声"
+  },
+  "media_type_video": {
+    "message": "動画"
+  },
+  "play_now": {
+    "message": "今すぐ再生"
+  },
+  "add_to_queue": {
+    "message": "キューへ追加"
+  },
+  "clear": {
+    "message": "消去"
+  },
+  "history": {
+    "message": "履歴"
+  },
+  "play_queue": {
+    "message": "再生キュー"
+  },
+  "item_added_notification": {
+    "message": "キューへ追加された項目"
+  },
+  "end_of_queue": {
+    "message": "他にキューに追加された項目はありません"
+  },
+  "error_msg": {
+    "message": "この動画に何か問題が発生しました。また後で試してください。"
+  },
+  "error_link": {
+    "message": "新しいタブで開く"
+  },
+  "loading_view_msg": {
+    "message": "%s を %s から読み込んでいます"
+  },
+  "confirm_msg": {
+    "message": "何をしたいですか？"
+  },
+  "add_confirm_msg": {
+    "message": "追加"
+  },
+  "play_confirm_msg": {
+    "message": "再生"
+  },
+  "error_sc_limit": {
+    "message": "今日の Soundcloud ストリームの上限に達しました。また明日試してください。"
+  },
+  "error_sc_connection": {
+    "message": "Soundcloud に接続できませんでした。また後で試してください。"
+  },
+  "error_sc_not_track": {
+    "message": "Soundcloud から送られたリンクはトラックではありません。音声トラックを送ってください。"
+  },
+  "error_sc_not_streamable": {
+    "message": "Soundcloud から送られたトラックはストリーム可能ではありません。別のトラックを試してください。"
+  },
+  "error_sc_restricted": {
+    "message": "このトラックの公開者はサードパーティーへのアクセスを制限しています。別のトラックを試してください。"
+  },
+  "error_vimeo_connection": {
+    "message": "Vimeo に接続できませんでした。また後で試してください。"
+  },
+  "error_youtube_not_found": {
+    "message": "動画が見つかりませんでした。リクエストされた動画は削除されたか非公開となっています。"
+  },
+  "error_youtube_not_allowed": {
+    "message": "この動画は所有者により埋め込み不可と指定されています。他の動画を試すか、投稿者に連絡を取ってください。"
+  }
+}

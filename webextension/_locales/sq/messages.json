@@ -1,0 +1,104 @@
+{
+  "tooltip_play": {
+    "message": "Luaje"
+  },
+  "tooltip_pause": {
+    "message": "Pushoje"
+  },
+  "tooltip_mute": {
+    "message": "Pa Zë"
+  },
+  "tooltip_unmute": {
+    "message": "Me Zë"
+  },
+  "tooltip_next": {
+    "message": "Pasuesja"
+  },
+  "tooltip_previous": {
+    "message": "E mëparshmja"
+  },
+  "tooltip_send_to_tab": {
+    "message": "Dërgoje në skedë"
+  },
+  "tooltip_minimize": {
+    "message": "Minimizoje"
+  },
+  "tooltip_maximize": {
+    "message": "Maksimizoje"
+  },
+  "tooltip_close": {
+    "message": "Mbylle"
+  },
+  "tooltip_switch_visual": {
+    "message": "Klikoni që të këmbehet vizualizimi"
+  },
+  "tooltip_open_queue": {
+    "message": "Hap Radhën"
+  },
+  "tooltip_close_queue": {
+    "message": "Mbylle Radhën"
+  },
+  "media_type_audio": {
+    "message": "audio"
+  },
+  "media_type_video": {
+    "message": "video"
+  },
+  "play_now": {
+    "message": "Luaje Tani"
+  },
+  "add_to_queue": {
+    "message": "Shtoje te radha"
+  },
+  "clear": {
+    "message": "Pastroje"
+  },
+  "history": {
+    "message": "Historik"
+  },
+  "play_queue": {
+    "message": "Luaje Radhën"
+  },
+  "error_msg": {
+    "message": "Diç shkoi ters me këtë video. Riprovoni më vonë."
+  },
+  "error_link": {
+    "message": "Hape në skedë të re"
+  },
+  "loading_view_msg": {
+    "message": "Po ngarkohet %s nga %s"
+  },
+  "confirm_msg": {
+    "message": "Ç’do të donit të bënit?"
+  },
+  "add_confirm_msg": {
+    "message": "Shtoje"
+  },
+  "play_confirm_msg": {
+    "message": "Luaje"
+  },
+  "error_sc_limit": {
+    "message": "Keni mbërritur në kufirin për rrjedha Soundcloud për sot, riprovoni nesër."
+  },
+  "error_sc_connection": {
+    "message": "S’u lidh dot te Soundcloud. Riprovoni më vonë."
+  },
+  "error_sc_not_track": {
+    "message": "Lidhja që keni dërguar prej Soundcloud-it s’është pjesë, provoni të dërgoni një pjesë audio."
+  },
+  "error_sc_not_streamable": {
+    "message": "Lidhja që keni dërguar prej Soundcloud-it s’është e transmetueshme, provoni një tjetër pjesë."
+  },
+  "error_sc_restricted": {
+    "message": "Publikuesi i kësaj pjese e ka kufizuar hyrjen për palë të treta, provoni një pjesë tjetër."
+  },
+  "error_vimeo_connection": {
+    "message": "S’u lidh dot te Vimeo. Riprovoni më vonë."
+  },
+  "error_youtube_not_found": {
+    "message": "S'u gjet video. Videoja që kërkuat ose është fshirë, ose i është vënë shenjë si private."
+  },
+  "error_youtube_not_allowed": {
+    "message": "Kësaj videoje i është vënë shenjë nga i zoti si e patrupëzueshme. Ju lutemi, provoni një video tjetër ose lidhuni me publikuesin."
+  }
+}

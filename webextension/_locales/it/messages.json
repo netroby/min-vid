@@ -1,0 +1,110 @@
+{
+  "tooltip_play": {
+    "message": "Riproduci"
+  },
+  "tooltip_pause": {
+    "message": "Pausa"
+  },
+  "tooltip_mute": {
+    "message": "Disattiva audio"
+  },
+  "tooltip_unmute": {
+    "message": "Attiva audio"
+  },
+  "tooltip_next": {
+    "message": "Successivo"
+  },
+  "tooltip_previous": {
+    "message": "Precedente"
+  },
+  "tooltip_send_to_tab": {
+    "message": "Sposta in una scheda"
+  },
+  "tooltip_minimize": {
+    "message": "Minimizza"
+  },
+  "tooltip_maximize": {
+    "message": "Ingrandisci"
+  },
+  "tooltip_close": {
+    "message": "Chiudi"
+  },
+  "tooltip_switch_visual": {
+    "message": "Fai clic per cambiare visualizzazione"
+  },
+  "tooltip_open_queue": {
+    "message": "Apri coda"
+  },
+  "tooltip_close_queue": {
+    "message": "Chiudi coda"
+  },
+  "media_type_audio": {
+    "message": "audio"
+  },
+  "media_type_video": {
+    "message": "video"
+  },
+  "play_now": {
+    "message": "Riproduci adesso"
+  },
+  "add_to_queue": {
+    "message": "Inserisci in coda"
+  },
+  "clear": {
+    "message": "Svuota"
+  },
+  "history": {
+    "message": "Cronologia"
+  },
+  "play_queue": {
+    "message": "Coda"
+  },
+  "item_added_notification": {
+    "message": "Elemento inserito in coda"
+  },
+  "end_of_queue": {
+    "message": "Non ci sono elementi in coda"
+  },
+  "error_msg": {
+    "message": "Si è verificato un problema con questo video. Riprova più tardi."
+  },
+  "error_link": {
+    "message": "Apri in una nuova scheda"
+  },
+  "loading_view_msg": {
+    "message": "Caricamento %s da %s"
+  },
+  "confirm_msg": {
+    "message": "Cosa vuoi fare?"
+  },
+  "add_confirm_msg": {
+    "message": "Aggiungi"
+  },
+  "play_confirm_msg": {
+    "message": "Riproduci"
+  },
+  "error_sc_limit": {
+    "message": "È stato raggiunto il limite giornaliero di riproduzioni per Soundcloud, riprova domani."
+  },
+  "error_sc_connection": {
+    "message": "Impossibile connettersi a Soundcloud. Riprova più tardi."
+  },
+  "error_sc_not_track": {
+    "message": "Il link inviato da Soundcloud non è una traccia audio, riprova con il tipo di file corretto."
+  },
+  "error_sc_not_streamable": {
+    "message": "Il link inviato da Soundcloud non è riproducibile in streaming, riprova con un’altra traccia audio."
+  },
+  "error_sc_restricted": {
+    "message": "L’autore di questa traccia ha limitato l’accesso a terze parti, riprova con un’altra traccia."
+  },
+  "error_vimeo_connection": {
+    "message": "Impossibile connettersi a Vimeo. Riprova più tardi."
+  },
+  "error_youtube_not_found": {
+    "message": "Non è stato possibile trovare il video. Potrebbe essere stato rimosso o impostato come video privato."
+  },
+  "error_youtube_not_allowed": {
+    "message": "Questo video è stato impostato come non incorporabile dal proprietario. Riprova con un video diverso o contatta chi l’ha pubblicato."
+  }
+}
