@@ -1,0 +1,110 @@
+{
+  "tooltip_play": {
+    "message": "Predvajaj"
+  },
+  "tooltip_pause": {
+    "message": "Ustavi"
+  },
+  "tooltip_mute": {
+    "message": "Nemo"
+  },
+  "tooltip_unmute": {
+    "message": "Glasno"
+  },
+  "tooltip_next": {
+    "message": "Naslednji"
+  },
+  "tooltip_previous": {
+    "message": "Prejšnji"
+  },
+  "tooltip_send_to_tab": {
+    "message": "Pošlji v zavihek"
+  },
+  "tooltip_minimize": {
+    "message": "Skrči"
+  },
+  "tooltip_maximize": {
+    "message": "Razpni"
+  },
+  "tooltip_close": {
+    "message": "Zapri"
+  },
+  "tooltip_switch_visual": {
+    "message": "Kliknite za preklop ponazoritve"
+  },
+  "tooltip_open_queue": {
+    "message": "Odpri čakalno vrsto"
+  },
+  "tooltip_close_queue": {
+    "message": "Zapri čakalno vrsto"
+  },
+  "media_type_audio": {
+    "message": "zvok"
+  },
+  "media_type_video": {
+    "message": "video"
+  },
+  "play_now": {
+    "message": "Predvajaj zdaj"
+  },
+  "add_to_queue": {
+    "message": "Dodaj v čakalno vrsto"
+  },
+  "clear": {
+    "message": "Počisti"
+  },
+  "history": {
+    "message": "Zgodovina"
+  },
+  "play_queue": {
+    "message": "Predvajaj čakalno vrsto"
+  },
+  "item_added_notification": {
+    "message": "Predmet dodan v čakalno vrsto"
+  },
+  "end_of_queue": {
+    "message": "V čakalni vrsti ni več predmetov"
+  },
+  "error_msg": {
+    "message": "Prišlo je do napake pri predvajanju videa. Poskusite znova pozneje."
+  },
+  "error_link": {
+    "message": "Odpri v novem zavihku"
+  },
+  "loading_view_msg": {
+    "message": "Nalaganje %s od %s"
+  },
+  "confirm_msg": {
+    "message": "Kaj želite storiti?"
+  },
+  "add_confirm_msg": {
+    "message": "Dodaj"
+  },
+  "play_confirm_msg": {
+    "message": "Predvajaj"
+  },
+  "error_sc_limit": {
+    "message": "Dosegli ste današnjo omejitev predvajanja na Soundcloudu. Poskusite znova jutri."
+  },
+  "error_sc_connection": {
+    "message": "Povezava s Soundcloudom ni uspela. Poskusite znova pozneje."
+  },
+  "error_sc_not_track": {
+    "message": "Povezava, ki ste jo poslali iz Soundclouda, ni posnetek. Poskusite poslati zvočni posnetek."
+  },
+  "error_sc_not_streamable": {
+    "message": "Posnetka, ki ste ga poslali iz Soundclouda, ni mogoče pretakati. Poskusite drug posnetek."
+  },
+  "error_sc_restricted": {
+    "message": "Založnik tega posnetka ne dovoli predvajanja tretjim osebam, poskusite predvajati kak drug posnetek."
+  },
+  "error_vimeo_connection": {
+    "message": "Povezava z Vimeom ni uspela. Poskusite znova pozneje."
+  },
+  "error_youtube_not_found": {
+    "message": "Videa ni mogoče najti. Želeni posnetek je bil bodisi odstranjen ali pa označen kot zasebni."
+  },
+  "error_youtube_not_allowed": {
+    "message": "Lastnik tega videa je onemogočil vdelavo posnetka. Poskusite izbrati drug posnetek ali pa stopite v stik z založnikom."
+  }
+}

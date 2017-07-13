@@ -1,0 +1,110 @@
+{
+  "tooltip_play": {
+    "message": "Lecture"
+  },
+  "tooltip_pause": {
+    "message": "Pause"
+  },
+  "tooltip_mute": {
+    "message": "Couper le son"
+  },
+  "tooltip_unmute": {
+    "message": "Réactiver le son"
+  },
+  "tooltip_next": {
+    "message": "Suivant"
+  },
+  "tooltip_previous": {
+    "message": "Précédent"
+  },
+  "tooltip_send_to_tab": {
+    "message": "Déplacer vers l’onglet"
+  },
+  "tooltip_minimize": {
+    "message": "Réduire"
+  },
+  "tooltip_maximize": {
+    "message": "Agrandir"
+  },
+  "tooltip_close": {
+    "message": "Fermer"
+  },
+  "tooltip_switch_visual": {
+    "message": "Cliquer pour changer de visualisation"
+  },
+  "tooltip_open_queue": {
+    "message": "Ouvrir la file d’attente"
+  },
+  "tooltip_close_queue": {
+    "message": "Fermer la file d’attente"
+  },
+  "media_type_audio": {
+    "message": "l’audio"
+  },
+  "media_type_video": {
+    "message": "la vidéo"
+  },
+  "play_now": {
+    "message": "Lancer la lecture"
+  },
+  "add_to_queue": {
+    "message": "Ajouter à la file d’attente"
+  },
+  "clear": {
+    "message": "Effacer"
+  },
+  "history": {
+    "message": "Historique"
+  },
+  "play_queue": {
+    "message": "File d’attente"
+  },
+  "item_added_notification": {
+    "message": "Élément ajouté à la file d’attente"
+  },
+  "end_of_queue": {
+    "message": "Il n’y a plus aucun élément dans la file d’attente"
+  },
+  "error_msg": {
+    "message": "Une erreur s’est produite avec cette vidéo. Veuillez réessayer plus tard."
+  },
+  "error_link": {
+    "message": "Ouvrir dans un nouvel onglet"
+  },
+  "loading_view_msg": {
+    "message": "Chargement de %s via %s"
+  },
+  "confirm_msg": {
+    "message": "Que souhaitez-vous faire ?"
+  },
+  "add_confirm_msg": {
+    "message": "Ajouter"
+  },
+  "play_confirm_msg": {
+    "message": "Lire"
+  },
+  "error_sc_limit": {
+    "message": "Vous avez atteint la limite de lecture Soundcloud pour aujourd’hui, réessayez demain."
+  },
+  "error_sc_connection": {
+    "message": "Impossible de se connecter à Soundcloud. Veuillez réessayer plus tard."
+  },
+  "error_sc_not_track": {
+    "message": "Le lien que vous avez envoyé depuis Soundcloud n’est pas une piste audio. Veuillez réessayer avec une piste audio."
+  },
+  "error_sc_not_streamable": {
+    "message": "La piste audio que vous avez envoyée depuis Soundcloud est illisible. Veuillez essayer avec une autre piste."
+  },
+  "error_sc_restricted": {
+    "message": "L’éditeur de cette piste audio a restreint l’accès par des tiers. Veuillez essayer avec une autre piste."
+  },
+  "error_vimeo_connection": {
+    "message": "Impossible de se connecter à Vimeo. Veuillez réessayer plus tard."
+  },
+  "error_youtube_not_found": {
+    "message": "Aucune vidéo trouvée. La vidéo demandée a été soit supprimée, soit rendue privée."
+  },
+  "error_youtube_not_allowed": {
+    "message": "Cette vidéo a été signalée par son propriétaire comme ne pouvant pas être intégrée. Veuillez essayer avec une autre vidéo ou contacter l’éditeur."
+  }
+}

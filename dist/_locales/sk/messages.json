@@ -1,0 +1,110 @@
+{
+  "tooltip_play": {
+    "message": "Prehrať"
+  },
+  "tooltip_pause": {
+    "message": "Pozastaviť"
+  },
+  "tooltip_mute": {
+    "message": "Stlmiť"
+  },
+  "tooltip_unmute": {
+    "message": "Zrušiť stlmenie"
+  },
+  "tooltip_next": {
+    "message": "Ďalej"
+  },
+  "tooltip_previous": {
+    "message": "Predchádzajúce"
+  },
+  "tooltip_send_to_tab": {
+    "message": "Odoslať na kartu"
+  },
+  "tooltip_minimize": {
+    "message": "Minimalizovať"
+  },
+  "tooltip_maximize": {
+    "message": "Maximalizovať"
+  },
+  "tooltip_close": {
+    "message": "Zavrieť"
+  },
+  "tooltip_switch_visual": {
+    "message": "Kliknutím prepnete vizualizáciu"
+  },
+  "tooltip_open_queue": {
+    "message": "Otvoriť zoznam"
+  },
+  "tooltip_close_queue": {
+    "message": "Zavrieť zoznam"
+  },
+  "media_type_audio": {
+    "message": "zvuk"
+  },
+  "media_type_video": {
+    "message": "video"
+  },
+  "play_now": {
+    "message": "Prehrať teraz"
+  },
+  "add_to_queue": {
+    "message": "Pridať do zoznamu"
+  },
+  "clear": {
+    "message": "Vyčistiť"
+  },
+  "history": {
+    "message": "História"
+  },
+  "play_queue": {
+    "message": "Prehrať zoznam"
+  },
+  "item_added_notification": {
+    "message": "Položka bola pridaná do zoznamu"
+  },
+  "end_of_queue": {
+    "message": "V zozname sa nenachádzajú žiadne ďalšie položky"
+  },
+  "error_msg": {
+    "message": "Pri prehrávaní tohto videa nastala chyba. Skúste to neskôr."
+  },
+  "error_link": {
+    "message": "Otvoriť na novej karte"
+  },
+  "loading_view_msg": {
+    "message": "Načítavam %s z %s"
+  },
+  "confirm_msg": {
+    "message": "Čo by ste chceli urobiť?"
+  },
+  "add_confirm_msg": {
+    "message": "Pridať do zoznamu"
+  },
+  "play_confirm_msg": {
+    "message": "Prehrať"
+  },
+  "error_sc_limit": {
+    "message": "Dosiahli ste denný limit počtu streamov v službe Soundcloud. Skúste to znova zajtra."
+  },
+  "error_sc_connection": {
+    "message": "Nepodarilo sa spojiť so službou Soundcloud. Skúste to znova neskôr."
+  },
+  "error_sc_not_track": {
+    "message": "Odkaz, ktorý ste zo Soundcloudu odoslali nie je zvuková stopa. Skúste odoslať zvukovú stopu."
+  },
+  "error_sc_not_streamable": {
+    "message": "Stopu, ktorú ste zo Soundcloudu odoslali nie je možné streamovať. Skúste odoslať inú zvukovú stopu."
+  },
+  "error_sc_restricted": {
+    "message": "Vydavateľ tejto zvukovej stopy zakázal prístup tretím stranám. Skúste inú zvukovú stopu."
+  },
+  "error_vimeo_connection": {
+    "message": "Nepodarilo sa spojiť so službou Vimeo. Skúste to znova neskôr."
+  },
+  "error_youtube_not_found": {
+    "message": "Video nebolo nájdené. Toto video bolo odstránené alebo označené ako súkromné."
+  },
+  "error_youtube_not_allowed": {
+    "message": "Autor videa nepovolil jeho vkladanie. Skúste, prosím, iné video alebo kontaktujte jeho vydavateľa."
+  }
+}

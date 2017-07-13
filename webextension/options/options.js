@@ -19,7 +19,7 @@ function setMax() {
 
 document.addEventListener('DOMContentLoaded', setMax);
 document.querySelector('form').addEventListener('submit', function() {
-  browser.storage.set({
+  browser.storage.local.set({
     width: document.querySelector('#min-vid-width').value,
     height: document.querySelector('#min-vid-height').value
   });

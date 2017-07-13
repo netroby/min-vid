@@ -1,6 +1,6 @@
 const _ = browser.i18n.getMessage
 
-module.exports = function(domain, isAudio) {
+export default function(domain, isAudio) {
   const mediaType = isAudio ? _('media_type_audio') : _('media_type_video');
 
   return JSON.stringify({

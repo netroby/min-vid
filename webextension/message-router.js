@@ -17,36 +17,15 @@ function handleMessage(msg) {
   const title = msg.action;
   const opts = msg;
 
-  switch (title) {
-    case 'send-to-tab':
-      const pageUrl = opts.launchUrl ? opts.launchUrl : getPageUrl(opts.domain, opts.id, opts.time);
-      if (pageUrl) browser.tabs.create({url: pageUrl});
-      else {
-        console.error('could not parse page url for ', opts); // eslint-disable-line no-console
-        send('set-video', {error: 'Error loading video from ' + opts.domain});
-      }
-      send('set-video', {domain: '', src: ''});
-      closeWindow();
-      break;
-
-
-  case value2:
-        //Statements executed when the result of expression matches
-    //value2
-    [break;]
-      ...
-  case valueN:
-        //Statements executed when the result of expression matches
-    //valueN
-    [break;]
-    [default:
-        //Statements executed when none of the values match the value
-     //of the expression
-     [break;]]
-  }
-
   if (title === 'send-to-tab') {
-    
+    const pageUrl = opts.launchUrl ? opts.launchUrl : getPageUrl(opts.domain, opts.id, opts.time);
+    if (pageUrl) browser.tabs.create({url: pageUrl});
+    else {
+      console.error('could not parse page url for ', opts); // eslint-disable-line no-console
+      send('set-video', {error: 'Error loading video from ' + opts.domain});
+    }
+    send('set-video', {domain: '', src: ''});
+    closeWindow();
   } else if (title === 'close') {
     let history = storage.local.get('history');
     let queue = storage.local.get('queue');

@@ -7,7 +7,7 @@ if (process.env.NODE_ENV === 'production') {
 } else conversion('*');
 
 function conversion(locales) {
-  const result = spawn.sync('pontoon-to-webext', [], {
+  const result = spawn.sync('pontoon-to-webext', ['--dest=webextension/_locales'], {
     stdio: 'inherit',
     env: Object.assign(
       {},
