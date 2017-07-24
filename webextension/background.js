@@ -6,39 +6,57 @@
 
 // set our unique identifier for metrics
 // (needs to be set before send-metrics-data is loaded)
+
 import getRandomId from './lib/get-random-id';
-if (!browser.storage.local.clientUUID) {
-  browser.storage.local.set({'clientUUID': getRandomId()});
+const store = browser.storage.local;
+
+function initStorage() {
+  store.get().then(r => {
+    if (!r.clientUUID) store.set({clientUUID: getRandomId()});
+    if (!r.width) store.set({width: browser.runtime.getManifest().config['DEFAULT_WIDTH']});
+    if (!r.height) store.set({height: browser.runtime.getManifest().config['DEFAULT_HEIGHT']});
+    if (!r.queue) store.set({queue: []});
+    if (!r.history) store.set({history: []});
+  });
 }
 
-if (!browser.storage.local.queue) browser.storage.local.queue = [];
-if (!browser.storage.local.history) browser.storage.local.history = [];
+initStorage();
 
-// import windowUtils from './lib/window-utils';
 import launchVideo from './lib/launch-video';
 import getVimeoUrl from './lib/get-vimeo-url';
 import youtubeHelpers from './lib/youtube-helpers';
 import sendMetricsData from './lib/send-metrics-data';
 import getSoundcloudUrl from './lib/get-soundcloud-url';
+import {dimensionsUpdate} from './lib/window-messages';
+
 // import contextMenuHandlers from './lib/context-menu-handlers';
-//   contextMenuHandlers.init();
+// contextMenuHandlers.init();
 import handleMessage from './lib/message-handler';
 
-const port = browser.runtime.connect({name: "connection-to-legacy"});
+const port = browser.runtime.connect({name: 'connection-to-legacy'});
 
-console.log('HEEEYYY, background.js addListener');
 port.onMessage.addListener((msg) => {
-  console.log('HEEEYYY, background.js this is the listener');
   if (msg.content === 'msg-from-frontend') handleMessage(msg.data, port);
+  if (msg.content === 'position-changed') {
+    browser.storage.local.set({
+      top: msg.data.top,
+      left: msg.data.left
+    });
+  }
 });
-console.log('HEEEYYY, background.js second addListener');
 
-browser.runtime.onMessage.addListener(onMessage);
+browser.storage.onChanged.addListener(onStorageChanged);
 
-function onMessage(opts) {
+function onStorageChanged(changes) {
+  if (changes.width) dimensionsUpdate({width: changes.width.newValue});
+  if (changes.height) dimensionsUpdate({height: changes.height.newValue});
+}
+
+browser.runtime.onMessage.addListener(onIconOverlayMessage);
+
+function onIconOverlayMessage(opts) {
   const title = opts.title;
   delete opts.title;
-  console.log('onMessage: ', opts);
 
   if (title === 'launch') {
     if (opts.domain.indexOf('youtube.com') > -1) {
@@ -58,9 +76,3 @@ function onMessage(opts) {
     launchVideo(opts);
   } else if (title === 'metric') sendMetricsData(opts);
 }
-
-// exports.onUnload = function() {
-//   windowUtils.destroy(true);
-//   contextMenuHandlers.destroy();
-//   launchIconsMod.destroy();
-// };

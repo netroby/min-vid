@@ -1,12 +1,12 @@
-const React = require('react');
-const PrevTrackBtn = require('./prev-button');
-const NextTrackBtn = require('./next-button');
-const SoundControl = require('./sound-control');
-const GeneralControls = require('./general-controls');
-const PlaybackControl = require('./playback-control');
-const Progress = require('./progress');
+import React from 'react';
+import PrevTrackBtn from './prev-button';
+import NextTrackBtn from './next-button';
+import SoundControl from './sound-control';
+import GeneralControls from './general-controls';
+import PlaybackControl from './playback-control';
+import Progress from './progress';
 
-class MinimizedControls extends React.Component {
+export default class MinimizedControls extends React.Component {
   render() {
     return (
         <div className='controls-wrapper'>
@@ -27,5 +27,3 @@ class MinimizedControls extends React.Component {
     );
   }
 }
-
-module.exports = MinimizedControls;

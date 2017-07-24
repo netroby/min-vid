@@ -72,17 +72,7 @@
     "message": "Open in new tab"
   },
   "loading_view_msg": {
-    "message": "Loading $MEDIA_TYPE from $DOMAIN",
-    "placeholders": {
-      "MEDIA_TYPE" : {
-        "content" : "$1",
-        "example" : "audio"
-      },
-      "DOMAIN": {
-        "content" : "$2",
-        "example" : "youtube.com"
-      }
-    }
+    "message": "Loading $1 from $2"
   },
   "confirm_msg": {
     "message": "What would you like to do?"
@@ -107,9 +97,6 @@
   },
   "error_sc_restricted": {
     "message": "The publisher of this track has restricted access to third parties, try another track."
-  },
-  "error_vimeo_connection": {
-    "message": "Could not connect to Vimeo. Try again later."
   },
   "error_youtube_not_found": {
     "message": "Video not found. The video you've requested has either been removed or marked private."

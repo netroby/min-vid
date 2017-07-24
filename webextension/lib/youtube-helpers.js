@@ -2,13 +2,10 @@ import { parse as qsParse, stringify } from './querystring';
 import { parse, toSeconds } from 'iso8601-duration';
 
 const apiKey = browser.runtime.getManifest().config['YOUTUBE_DATA_API_KEY'];
-
-console.log('yt api key', apiKey);
-
 const headers = new Headers({
   'Accept': 'application/json',
-  'Content-Type': 'application/json',
-  'Content-Length': content.length.toString()
+  'Content-Type': 'application/json'
+  // 'Content-Length': content.length.toString()
 });
 
 export default {
@@ -26,12 +23,12 @@ function getVideo(opts, cb) {
 
   const url = `https://www.googleapis.com/youtube/v3/videos?${query}`;
 
-  fetch(url, { method: 'GET',
-               mode: 'cors',
-               headers: headers,
-               cache: 'default' })
+  fetch(url, {
+    method: 'GET',
+    mode: 'cors',
+    headers: headers,
+    cache: 'default' })
     .then((res) => res.json().then(function(json) {
-      console.log('my result json', json);
       const result = json.items;
       const item = {
         cc: opts.cc,
@@ -47,16 +44,19 @@ function getVideo(opts, cb) {
       };
 
       const url = `https://www.youtube.com/get_video_info?video_id=${opts.videoId}`;
-      fetch(url, { method: 'GET',
-                   mode: 'cors',
-                   headers: headers,
-                   cache: 'default' })
+      fetch(url, {
+        method: 'GET',
+        mode: 'cors',
+        headers: headers,
+        cache: 'default' })
         .then((res) => res.text().then(function(text) {
           const result = qsParse(text);
           if (result.status === 'fail') {
             if (result.reason.indexOf('restricted')) item.error = 'error_youtube_not_allowed';
             else item.error = 'error_youtube_not_found';
           }
+
+          console.log('get youtube video:: ', item);
 
           cb(item);
         }));
@@ -71,10 +71,11 @@ function getPlaylistMeta(opts, cb) {
   });
 
   const url = `https://www.googleapis.com/youtube/v3/playlists?${query}`;
-  fetch(url, { method: 'GET',
-               mode: 'cors',
-               headers: headers,
-               cache: 'default' })
+  fetch(url, {
+    method: 'GET',
+    mode: 'cors',
+    headers: headers,
+    cache: 'default' })
     .then((res) => res.json().then(function(json) {
       const result = json.items[0].snippet;
 
@@ -83,10 +84,11 @@ function getPlaylistMeta(opts, cb) {
       query = stringify(query);
 
       const url = `https://www.googleapis.com/youtube/v3/videos?${query}`;
-      fetch(url, { method: 'GET',
-                   mode: 'cors',
-                   headers: headers,
-                   cache: 'default' })
+      fetch(url, {
+        method: 'GET',
+        mode: 'cors',
+        headers: headers,
+        cache: 'default' })
         .then((res) => res.json().then(function(json) {
           cb(Object.assign(opts, {
             playlistTitle: result.title,
@@ -106,10 +108,11 @@ function getPlaylist(opts, cb, passedPlaylist) {
   });
 
   const url = `https://www.googleapis.com/youtube/v3/playlistItems?${query}`;
-  fetch(url, { method: 'GET',
-               mode: 'cors',
-               headers: headers,
-               cache: 'default' })
+  fetch(url, {
+    method: 'GET',
+    mode: 'cors',
+    headers: headers,
+    cache: 'default' })
     .then((res) => res.json().then(function(json) {
       const result = json;
       if (result.pageInfo.totalResults <= 50) {

@@ -1,14 +1,14 @@
-const React = require('react');
-const ReactTooltip = require('react-tooltip');
-const sendToAddon = require('../client-lib/send-to-addon');
-const sendMetricsEvent = require('../client-lib/send-metrics-event');
+import React from 'react';
+import ReactTooltip from 'react-tooltip';
+import sendToAddon from '../client-lib/send-to-addon';
+import sendMetricsEvent from '../client-lib/send-metrics-event';
 
 function getView() {
   if (window.AppData.error) return 'error_view';
   return window.AppData.loaded ? 'player_view' : 'loading_view';
 }
 
-module.exports = class SendToTab extends React.Component {
+export default class SendToTab extends React.Component {
   sendToTab() {
     sendMetricsEvent(getView(), 'send_to_tab', this.props.queue[0].domain);
     let currentTime = 0;

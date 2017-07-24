@@ -1,9 +1,9 @@
-const React = require('react');
-const cn = require('classnames');
-const sendToAddon = require('../client-lib/send-to-addon');
-const sendMetricsEvent = require('../client-lib/send-metrics-event');
+import React from 'react';
+import cn from 'classnames';
+import sendToAddon from '../client-lib/send-to-addon';
+import sendMetricsEvent from '../client-lib/send-metrics-event';
 
-module.exports = class ReplayView extends React.Component {
+export default class ReplayView extends React.Component {
   close() {
     sendMetricsEvent('replay_view', 'close', this.props.queue[0].domain);
     sendToAddon({action: 'close'});

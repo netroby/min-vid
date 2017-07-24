@@ -1,8 +1,8 @@
-const React = require('react');
-const sendToAddon = require('../client-lib/send-to-addon');
-const sendMetricsEvent = require('../client-lib/send-metrics-event');
+import React from 'react';
+import sendToAddon from '../client-lib/send-to-addon';
+import sendMetricsEvent from '../client-lib/send-metrics-event';
 
-class ErrorView extends React.Component {
+export default class ErrorView extends React.Component {
   componentWillMount() {
     const domain = this.props.queue.length ? this.props.queue[0].domain : null;
     sendMetricsEvent('error_view', 'render', domain);
@@ -45,5 +45,3 @@ class ErrorView extends React.Component {
     );
   }
 }
-
-module.exports = ErrorView;
