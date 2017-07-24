@@ -1,13 +1,12 @@
 export {parse, stringify};
 
 function parse(qs) {
-  let result = {};
-  console.log('q s    :', qs);
-    const idx = qs.indexOf('?');
-    qs.substr(idx+1).split('&')
-      .map(a => a.split('='))
-      .map(a => result[a[0]] = encodeURI(a[1]));
-    return result;
+  const result = {};
+  const idx = qs.indexOf('?');
+  qs.substr(idx + 1).split('&')
+    .map(a => a.split('='))
+    .map(a => result[a[0]] = encodeURI(a[1]));
+  return result;
 }
 
 function stringify(params) {

@@ -1,24 +1,24 @@
-const React = require('react');
-const cn = require('classnames');
-const keyboardJS = require('keyboardjs');
-const debounce = require('lodash.debounce');
-const ReactPlayer = require('react-player');
+import React from 'react';
+import cn from 'classnames';
+import keyboardJS from 'keyboardjs';
+import debounce from 'lodash.debounce';
+import ReactPlayer from 'react-player';
 
-const AudioCtrl = require('../client-lib/audio-ctrl');
-const formatTime = require('../client-lib/format-time');
-const sendToAddon = require('../client-lib/send-to-addon');
-const sendMetricsEvent = require('../client-lib/send-metrics-event');
+import AudioCtrl from '../client-lib/audio-ctrl';
+import formatTime from '../client-lib/format-time';
+import sendToAddon from '../client-lib/send-to-addon';
+import sendMetricsEvent from '../client-lib/send-metrics-event';
 
-const Queues = require('./queues');
-const ErrorView = require('./error-view');
-const ReplayView = require('./replay-view');
-const PrevTrackBtn = require('./prev-button');
-const NextTrackBtn = require('./next-button');
-const PlayerControls = require('./player-controls');
-const GeneralControls = require('./general-controls');
-const MinimizedControls = require('./minimized-controls');
+import Queues from './queues';
+import ErrorView from './error-view';
+import ReplayView from './replay-view';
+import PrevTrackBtn from './prev-button';
+import NextTrackBtn from './next-button';
+import PlayerControls from './player-controls';
+import GeneralControls from './general-controls';
+import MinimizedControls from './minimized-controls';
 
-module.exports = class Player extends React.Component {
+export default class Player extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -32,10 +32,12 @@ module.exports = class Player extends React.Component {
   }
 
   componentDidMount() {
-    if (this.props.keyShortcutsEnabled) this.attachKeyboardShortcuts();
+    console.log('componentDidMount');
+    this.attachKeyboardShortcuts();
   }
 
   componentDidUpdate(prevProps, prevState) {
+    console.log('componentDidUpdate', prevProps, 'STATE', prevState);
     if (prevProps.queue[0].url !== this.props.queue[0].url) {
       if (this.props.queue[0].player === 'audio') this.loadAudio();
     }
@@ -49,7 +51,7 @@ module.exports = class Player extends React.Component {
     clearTimeout(this.loadingTimeout);
     this.loadingTimeout = setTimeout(() => {
       console.error('ERROR: loading timeout'); // eslint-disable-line no-console
-    }, 20000);
+    }, 30000);
 
     if (this.audio) this.audio.remove();
 
@@ -79,16 +81,20 @@ module.exports = class Player extends React.Component {
   }
 
   onPlay() {
+    console.log('onPlay');
     sendMetricsEvent('player_view', 'play', this.props.queue[0].domain);
     window.AppData.set({playing: true});
   }
 
   onPause() {
+    console.log('onPause');
     sendMetricsEvent('player_view', 'pause'), this.props.queue[0].domain;
     window.AppData.set({playing: false});
   }
 
   handleVideoClick(ev) {
+    console.log('handleVideoClick');
+    ev.persist();
     if (this.props.exited) return;
     if ((ev.target.tagName !== 'VIDEO') && (ev.target.tagName !== 'CANVAS')) return;
 
@@ -131,6 +137,7 @@ module.exports = class Player extends React.Component {
   }
 
   onLoaded(duration) {
+    console.log('LOADED::', this.props, duration);
     clearTimeout(this.loadingTimeout);
     window.AppData.set({loaded: true, exited: false});
     if (this.props.queue[0].live) this.setState({time: 'LIVE'});
@@ -217,7 +224,7 @@ module.exports = class Player extends React.Component {
     const countdown = (count) => {
       this.setState({errorCount: count});
       if (count > 0) {
-        setTimeout(() => { countdown(count - 1) }, 1000);
+        setTimeout(() => { countdown(count - 1); }, 1000);
       } else if (this.props.queue[0].error) this.nextTrack();
     };
 
@@ -229,7 +236,7 @@ module.exports = class Player extends React.Component {
     const countdown = (count) => {
       this.setState({notificationCount: count});
       if (count > 0) {
-        setTimeout(() => { countdown(count - 1) }, 1000);
+        setTimeout(() => { countdown(count - 1); }, 1000);
       } else window.AppData.set({trackAdded: false});
     };
 
@@ -238,6 +245,14 @@ module.exports = class Player extends React.Component {
   }
 
   render() {
+    function debouncedVideoClickHandler(ev) {
+      ev.persist();
+      const that = this;
+      setTimeout(function() {
+        that.handleVideoClick.bind(that)(ev);
+      }, 100);
+    }
+
     if (this.props.queue[0].error && this.props.queue.length > 1) this.startErrorTimeout();
 
     let visualEl;
@@ -245,7 +260,7 @@ module.exports = class Player extends React.Component {
     if (this.props.queue[0].error) {
       visualEl = <ErrorView {...this.props} countdown={this.state.errorCount} />;
     } else if (this.props.queue[0].player === 'audio') {
-      visualEl = <div id='audio-container' ref={(c) => { this.audioContainer = c; }} onClick={debounce(this.handleVideoClick.bind(this), 100)}/>;
+      visualEl = <div id='audio-container' ref={(c) => { this.audioContainer = c; }} onClick={debouncedVideoClickHandler.bind(this)}/>;
     } else {
       visualEl = <ReactPlayer {...this.props} url={this.props.queue[0].url} ref={(c) => { this.player = c; }}
                         onPlay={this.onPlay.bind(this)}
@@ -293,7 +308,7 @@ module.exports = class Player extends React.Component {
     return (<div className='video-wrapper'
                  onMouseEnter={this.enterPlayer.bind(this)}
                  onMouseLeave={this.leavePlayer.bind(this)}
-                 onClick={debounce(this.handleVideoClick.bind(this), 100)}>
+                 onClick={debouncedVideoClickHandler.bind(this)}>
               {exited}
               <PrevTrackBtn {...this.props} hovered={this.state.hovered} />
               <NextTrackBtn {...this.props} nextTrack={this.nextTrack.bind(this)} hovered={this.state.hovered} />

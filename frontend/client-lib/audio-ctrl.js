@@ -1,14 +1,14 @@
-const AudioSource = require('audiosource');
-const createWaveform = require('gl-waveform');
+import AudioSource from 'audiosource';
+import createWaveform from 'gl-waveform';
 
-module.exports = class AudioCtrl {
+export default class AudioCtrl {
   constructor(options) {
     this.prevVolume = 0.5;
     this.onProgress = options.onProgress;
     this.onEnded = () => {
       this.pause();
       options.onEnded();
-    }
+    };
 
     this.audio = new AudioSource({
       src: options.url,
@@ -22,6 +22,9 @@ module.exports = class AudioCtrl {
         if (canvas) canvas.remove();
 
         this.data = new Float32Array(this.audio.analyser.fftSize);
+
+        console.log('create waveform', audioContainer, this.audio);
+
         this.waveform = createWaveform({
           container: audioContainer,
           samples: this.audio.getFloatTimeDomainData(this.data),

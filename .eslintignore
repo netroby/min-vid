@@ -1,6 +1,7 @@
-bin/build-addon.sh
-bootstrap.js
-data/bundle.js
-data/controls.js
-data/www-widgetapi.js
+bin/
+node_modules/
+chrome/content/frontend.bundle.js
+chrome/content/www-widgetapi.js
+webextension/dist/background.bundle.js
 stories/
+__tests__/

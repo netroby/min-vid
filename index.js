@@ -64,7 +64,6 @@ exports.main = function() {
           domain: opts.domain
         });
 
-
         launchVideo(opts);
       });
       worker.port.on('metric', sendMetricsData);
@@ -79,7 +78,7 @@ exports.main = function() {
     }
   });
 
-  contextMenuHandlers.init(windowUtils.getWindow());
+  contextMenuHandlers.init();
 };
 
 exports.onUnload = function(reason) {
