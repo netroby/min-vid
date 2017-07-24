@@ -2,5 +2,6 @@ node_modules
 npm-debug.log
 *.sw[po]
 *.xpi
-data/bundle.js
-locale/*.properties
+chrome/content/frontend.bundle.js
+webextension/dist/background.bundle.js
+webextension/_locales/**/*.json

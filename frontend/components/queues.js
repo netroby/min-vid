@@ -1,15 +1,15 @@
-const React = require('react');
-const cn = require('classnames');
-const Sortable = require('sortablejs');
-const {Tab, Tabs, TabList, TabPanel} = require('react-tabs');
-const ReactTooltip = require('react-tooltip');
-const sendToAddon = require('../client-lib/send-to-addon');
-const sendMetricsEvent = require('../client-lib/send-metrics-event');
-const Item = require('./queue-item');
+import React from 'react';
+import cn from 'classnames';
+import Sortable from 'sortablejs';
+import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
+import ReactTooltip from 'react-tooltip';
+import sendToAddon from '../client-lib/send-to-addon';
+import sendMetricsEvent from '../client-lib/send-metrics-event';
+import Item from './queue-item';
 
 Tabs.setUseDefaultStyles(false);
 
-class QueuesView extends React.Component {
+export default class QueuesView extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -84,5 +84,3 @@ class QueuesView extends React.Component {
     );
   }
 }
-
-module.exports = QueuesView;

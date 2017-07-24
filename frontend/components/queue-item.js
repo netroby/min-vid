@@ -1,17 +1,14 @@
-const React = require('react');
-const cn = require('classnames');
-const ReactTooltip = require('react-tooltip');
-const formatTime = require('../client-lib/format-time');
-const sendToAddon = require('../client-lib/send-to-addon');
-
-// const playIcon = require('../data/img/play-blue.svg');
-// const addIcon = require('../data/img/add.svg');
+import React from 'react';
+import cn from 'classnames';
+import ReactTooltip from 'react-tooltip';
+import formatTime from '../client-lib/format-time';
+import sendToAddon from '../client-lib/send-to-addon';
 
 const playIcon = '../data/img/play-blue.svg';
 const addIcon = '../data/img/add.svg';
-const errorIcon = '../data/img/static-static.png'
+const errorIcon = '../data/img/static-static.png';
 
-module.exports = class Item extends React.Component {
+export default class Item extends React.Component {
   constructor(props) {
     super(props);
     this.state = {hovered: false};

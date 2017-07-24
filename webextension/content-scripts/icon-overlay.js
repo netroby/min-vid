@@ -1,34 +1,22 @@
 const host = window.location.host;
 let availableMetricSent = false;
-let overlayCheckInterval;
 
-console.log('HEEEYYY, icon-overlay.js addListener');
 browser.runtime.onMessage.addListener(onMessage);
 
-window.strings = {
-  playNow: 'Play Now',
-  add: 'Add to queue'
-};
+injectStyle();
+checkForEmbeds();
+const overlayCheckInterval = setInterval(checkForEmbeds, 3000);
 
 function onMessage(opts) {
-  console.log('HEEEYYY, icon-overlay.js this is the listerne');
   const title = opts.title;
   delete opts.title;
-  injectStyle();
-  if (title === 'receive-strings') {
-    window.strings = strings;
-    checkForEmbeds();
-    overlayCheckInterval = setInterval(checkForEmbeds, 3000);
-  } else if (title === 'detach') {
+  if (title === 'detach') {
+    // TODO removeStyle();
     clearInterval(overlayCheckInterval);
     Array.from(document.querySelectorAll('.minvid__overlay__wrapper'))
       .forEach(removeOverlay);
   }
 }
-
-injectStyle();
-checkForEmbeds();
-overlayCheckInterval = setInterval(checkForEmbeds, 3000);
 
 function removeOverlay(el) {
   el.classList.remove('minvid__overlay__wrapper');
@@ -276,10 +264,10 @@ function getTemplate() {
   containerEl.className = 'minvid__overlay__container';
   playIconEl.className = 'minvid__overlay__icon';
   playIconEl.id = 'minvid__overlay__icon__play';
-  playIconEl.title = window.strings.playNow;
+  playIconEl.title = browser.i18n.getMessage('play_now');
   addIconEl.className = 'minvid__overlay__icon';
   addIconEl.id = 'minvid__overlay__icon__add';
-  addIconEl.title = window.strings.add;
+  addIconEl.title = browser.i18n.getMessage('add_to_queue');
   containerEl.appendChild(playIconEl);
   containerEl.appendChild(addIconEl);
 
@@ -371,11 +359,11 @@ function injectStyle() {
 }
   `;
 
-  let head = document.head;
-  let style = document.createElement('style');
+  const head = document.head;
+  const style = document.createElement('style');
 
   style.type = 'text/css';
-  if (style.styleSheet){
+  if (style.styleSheet) {
     style.styleSheet.cssText = css;
   } else {
     style.appendChild(document.createTextNode(css));

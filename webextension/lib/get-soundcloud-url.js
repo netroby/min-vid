@@ -15,6 +15,15 @@ function getSoundcloudArtworkUrl(json) {
 
 export default function getSoundcloudUrl(opts, cb) {
   const url = `https://api.soundcloud.com/resolve.json?client_id=${clientId}&url=${opts.url}`;
+  let item = {
+    url: opts.url,
+    title: '',
+    preview: '',
+    duration: 0,
+    launchUrl: opts.url,
+    domain: 'soundcloud.com',
+    error: false
+  };
 
   fetch(url, { method: 'GET',
                mode: 'cors',
@@ -67,9 +76,8 @@ export default function getSoundcloudUrl(opts, cb) {
 
         cb(item);
       });
-    })
-    .catch((err) => {
-      console.error(`Soundcloud request via fetch failed: ${err}`);
+    }).catch((err) => {
+      console.error(`Soundcloud request via fetch failed: ${err}`);  // eslint-disable-line no-console
       item.error = 'errorMsg';
       cb(item);
     });

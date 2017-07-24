@@ -1,10 +1,10 @@
-const React = require('react');
-const cn = require('classnames');
-const Progress = require('./progress');
-const SoundControl = require('./sound-control');
-const PlaybackControl = require('./playback-control');
+import React from 'react';
+import cn from 'classnames';
+import Progress from './progress';
+import SoundControl from './sound-control';
+import PlaybackControl from './playback-control';
 
-class PlayerControls extends React.Component {
+export default class PlayerControls extends React.Component {
   constructor(props) {
     super(props);
     this.state = {exited: false};
@@ -21,5 +21,3 @@ class PlayerControls extends React.Component {
             </div>);
   }
 }
-
-module.exports = PlayerControls;
