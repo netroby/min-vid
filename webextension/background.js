@@ -12,11 +12,13 @@ const store = browser.storage.local;
 
 function initStorage() {
   store.get().then(r => {
-    if (!r.clientUUID) store.set({clientUUID: getRandomId()});
-    if (!r.width) store.set({width: browser.runtime.getManifest().config['DEFAULT_WIDTH']});
-    if (!r.height) store.set({height: browser.runtime.getManifest().config['DEFAULT_HEIGHT']});
-    if (!r.queue) store.set({queue: []});
-    if (!r.history) store.set({history: []});
+    let storage = {};
+    if (!r.clientUUID) storage.clientUUID = getRandomId();
+    if (!r.width) storage.width = browser.runtime.getManifest().config['DEFAULT_WIDTH'];
+    if (!r.height) storage.height = browser.runtime.getManifest().config['DEFAULT_HEIGHT'];
+    if (!r.queue) storage.queue = [];
+    if (!r.history) storage.history = [];
+    store.set(storage);
   });
 }
 
