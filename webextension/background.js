@@ -10,6 +10,8 @@
 import getRandomId from './lib/get-random-id';
 const store = browser.storage.local;
 
+store.clear(); // TODO: remove this before launch
+
 function initStorage() {
   store.get().then(r => {
     let storage = {};

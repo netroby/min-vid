@@ -16,6 +16,7 @@ function isAudio(url) {
 
 // Pass in a video URL as opts.src or pass in a video URL lookup function as opts.getUrlFn
 export default function launchVideo(opts) {
+  prepareWindow();
   store.get().then(r => {
     const getUrlFn = opts.getUrlFn;
     const action = opts.action;
@@ -24,8 +25,6 @@ export default function launchVideo(opts) {
     delete opts.action;
 
     if (action === 'play') opts.playing = true;
-
-    prepareWindow();
     send(opts = Object.assign({
       id: uuid(),
       width: r.width,

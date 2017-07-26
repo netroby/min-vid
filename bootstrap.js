@@ -52,7 +52,7 @@ function startup(data, reason) { // eslint-disable-line no-unused-vars
       webExtPort = port;
       webExtPort.onMessage.addListener((msg) => {
         if (msg.content === 'window:send') {
-          updateWindow();
+          console.log('called window:send == ', msg);
           send(msg.data);
         }
         else if (msg.content === 'window:prepare') updateWindow();
@@ -76,6 +76,10 @@ function shutdown(data, reason) { // eslint-disable-line no-unused-vars
 function install(data, reason) {} // eslint-disable-line no-unused-vars
 function uninstall(data, reason) {}// eslint-disable-line no-unused-vars
 
+function updateWindow() {
+  return mvWindow || create();
+}
+
 function setDimensions(dimensions) {
   DIMENSIONS = Object.assign(DIMENSIONS, dimensions);
 }
@@ -90,19 +94,15 @@ function setDimensions(dimensions) {
 function whenReady(cb) {
   // TODO: instead of setting timeout for each callback, just poll,
   // then call all callbacks.
-  if (mvWindow &&
-      'AppData' in mvWindow.wrappedJSObject &&
-      'YT' in mvWindow.wrappedJSObject &&
-      'PlayerState' in mvWindow.wrappedJSObject.YT) return cb();
+  if (mvWindow && 'AppData' in mvWindow.wrappedJSObject) return cb();
   setTimeout(() => { whenReady(cb); }, 25);
 }
 
 // I can't get frame scripts working, so instead we just set global state directly in react. fml
 function send(msg) {
   whenReady(() => {
-    console.log('SEND', msg);
-    const newData = Object.assign(mvWindow.wrappedJSObject.AppData, msg);
-    mvWindow.wrappedJSObject.AppData = newData;
+    const newData = Object.assign({}, mvWindow.wrappedJSObject.AppData, msg);
+    mvWindow.wrappedJSObject.AppData.set(newData);
   });
 }
 
@@ -221,10 +221,6 @@ function destroy(isUnload) {
     Services.obs.removeObserver(onWindowClosed, 'xul-window-destroyed');
     Services.obs.removeObserver(closeRequested, 'browser-lastwindow-close-requested');
   }
-}
-
-function updateWindow() {
-  return mvWindow || create();
 }
 
 function minimize() {
