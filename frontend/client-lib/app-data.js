@@ -28,6 +28,7 @@ function init() {
     }
   }), {
     set(obj, prop, value) {
+      console.log('SETTING', obj, prop, value);
       if (prop === 'strings' || prop === 'queue' || prop === 'history' || prop === 'confirmContent') {
         if (prop === 'strings') console.log('STRINGS', prop);
         try {
