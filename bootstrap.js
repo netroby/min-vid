@@ -102,6 +102,7 @@ function whenReady(cb) {
 function send(msg) {
   whenReady(() => {
     const newData = Object.assign({}, mvWindow.wrappedJSObject.AppData, msg);
+    console.error('SEND:', mvWindow.wrappedJSObject.AppData, 'NEW DATA:::', newData, 'MSG:::', msg);
     mvWindow.wrappedJSObject.AppData.set(newData);
   });
 }

@@ -1,4 +1,4 @@
-// import debounce from 'lodash.debounce';
+import debounce from 'lodash.debounce';
 
 // initial render is triggered by appData being set in
 // `data/controls`. Listener is setup in `client-lib/app-data.js`
@@ -15,9 +15,9 @@ window.resetCommands = function() {
   window.pendingCommands = [];
 };
 
-// window.onresize = debounce(() => {
-//   window.AppData.set({
-//     width: document.body.clientWidth,
-//     height: document.body.clientHeight
-//   });
-// }, 200);
+window.onresize = debounce(() => {
+  window.AppData.set({
+    width: document.body.clientWidth,
+    height: document.body.clientHeight
+  });
+}, 200);
