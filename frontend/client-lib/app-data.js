@@ -13,10 +13,10 @@ const DEFAULT_PROPS = {
   duration: 0,
   playing: false,
   volume: 0.5,
-  strings: {},
+  strings: '{}',
   visual: 'time', // revisit
   confirm: false,
-  confirmContent: {},
+  confirmContent: '{}',
   queue: [],
   history: []
 };
