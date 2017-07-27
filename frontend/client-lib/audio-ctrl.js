@@ -1,5 +1,5 @@
 import AudioSource from 'audiosource';
-import createWaveform from 'gl-waveform';
+// import createWaveform from 'gl-waveform';
 
 export default class AudioCtrl {
   constructor(options) {
@@ -17,21 +17,19 @@ export default class AudioCtrl {
         if (err) return options.onError();
         options.onLoaded(this.duration);
 
-        const audioContainer = document.getElementById('audio-container');
-        const canvas = audioContainer.querySelector('canvas');
-        if (canvas) canvas.remove();
+        // const audioContainer = document.getElementById('audio-container');
+        // const canvas = audioContainer.querySelector('canvas');
+        // if (canvas) canvas.remove();
 
-        this.data = new Float32Array(this.audio.analyser.fftSize);
+        // this.data = new Float32Array(this.audio.analyser.fftSize);
 
-        console.log('create waveform', audioContainer, this.audio);
+        // this.waveform = createWaveform({
+        //   container: audioContainer,
+        //   samples: this.audio.getFloatTimeDomainData(this.data),
+        //   width: 44100
+        // });
 
-        this.waveform = createWaveform({
-          container: audioContainer,
-          samples: this.audio.getFloatTimeDomainData(this.data),
-          width: 44100
-        });
-
-        audioContainer.querySelector('canvas').setAttribute('moz-opaque', true);
+        // audioContainer.querySelector('canvas').setAttribute('moz-opaque', true);
 
         this._loop();
 
@@ -79,8 +77,8 @@ export default class AudioCtrl {
     if (this.audio.currentTime > this.audio.duration) return this.onEnded();
     this.af = requestAnimationFrame(this._loop.bind(this));
 
-    this.audio.getFloatTimeDomainData(this.data);
-    this.waveform.push(this.data);
+    // this.audio.getFloatTimeDomainData(this.data);
+    // this.waveform.push(this.data);
     this.onProgress({played: this.audio.currentTime / this.audio.duration});
   }
 
