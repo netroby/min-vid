@@ -1,0 +1,32 @@
+const ncp = require('ncp').ncp;
+
+// ncp.limit = 16;
+
+// ncp(source, destination, function (err) {
+//  if (err) {
+//     return console.error(err);
+     
+// }
+//  console.log('done!');
+ 
+// });
+const dest = 'addon/'
+
+function webextDirFilter(src) {
+  console.log(src);
+  if (src.indexOf('/lib/')) return false;
+  else if (src.indexOf('background.js')) return false;
+  return true;
+}
+
+ncp('webextension/', dest, {
+  filter: webextDirFilter
+}, () => console.log('done!'));
+
+
+  // .then(() => fs.copy('chrome', dest + 'chrome/'))
+  // .then(() => fs.copy('lib', dest + 'lib/'))
+  // .then(() => fs.copy('bootstrap.js', dest))
+  // .then(() => fs.copy('chrome.manifest', dest))
+  // .then(() => fs.copy('install.rdf', dest))
+  // .then(() => console.log('finished!'));
