@@ -33,12 +33,10 @@ export default class Player extends React.Component {
   }
 
   componentDidMount() {
-    console.log('componentDidMount');
     this.attachKeyboardShortcuts();
   }
 
   componentDidUpdate(prevProps, prevState) {
-    console.log('componentDidUpdate', prevProps, 'STATE', prevState);
     if (prevProps.queue[0].url !== this.props.queue[0].url) {
       if (this.props.queue[0].player === 'audio') this.loadAudio();
       else this.unLoadAudio();
@@ -91,19 +89,16 @@ export default class Player extends React.Component {
   }
 
   onPlay() {
-    console.log('onPlay');
     sendMetricsEvent('player_view', 'play', this.props.queue[0].domain);
     window.AppData.set({playing: true});
   }
 
   onPause() {
-    console.log('onPause');
     sendMetricsEvent('player_view', 'pause'), this.props.queue[0].domain;
     window.AppData.set({playing: false});
   }
 
   handleVideoClick(ev) {
-    console.log('handleVideoClick');
     ev.persist();
     if (this.props.exited) return;
     if ((ev.target.tagName !== 'VIDEO') && (ev.target.tagName !== 'CANVAS')) return;
@@ -147,7 +142,6 @@ export default class Player extends React.Component {
   }
 
   onLoaded(duration) {
-    console.log('LOADED::', this.props, duration);
     clearTimeout(this.loadingTimeout);
     window.AppData.set({loaded: true, exited: false});
     if (this.props.queue[0].live) this.setState({time: 'LIVE'});

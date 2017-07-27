@@ -13,10 +13,10 @@ const DEFAULT_PROPS = {
   duration: 0,
   playing: false,
   volume: 0.5,
-  strings: '{}',
+  strings: {},
   visual: 'time', // revisit
   confirm: false,
-  confirmContent: '{}',
+  confirmContent: {},
   queue: [],
   history: []
 };
@@ -28,13 +28,16 @@ function init() {
     }
   }), {
     set(obj, prop, value) {
-      console.log('SETTING', obj, prop, value);
       if (prop === 'strings' || prop === 'queue' || prop === 'history' || prop === 'confirmContent') {
-        if (prop === 'strings') console.log('STRINGS', prop);
-        try {
-          obj[prop] = JSON.parse(value);
-        } catch (ex) {
-          window.console.error('Unable to parse l10n strings: ', ex, prop, value);
+        if (typeof value === 'object') {
+          console.log('value is already object', prop, value);
+          obj[prop] = value;
+        } else {
+          try {
+            obj[prop] = JSON.parse(value);
+          } catch (ex) {
+            window.console.error('Unable to parse l10n strings: ', ex, prop, value);
+          }
         }
       } else obj[prop] = value;
       renderApp();
@@ -44,8 +47,6 @@ function init() {
 }
 
 function renderApp() {
-  console.log('WTF', window.AppData);
-
   ReactDOM.render(React.createElement(AppView, window.AppData),
                   document.getElementById('container'));
 }
