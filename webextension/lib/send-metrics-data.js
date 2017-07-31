@@ -20,21 +20,6 @@ export default function sendMetricsData(o) {
         cd6: o.domain,
         el: o,
         ds: 'webextension'
-      })
-      .then(() => {
-        // TODO: remove these consolelogs
-        console.log(`Event succeeded: '${o.ec}' '${o.ea}'`);
-      })
-      .catch(msg => console.error("Event failed: ", msg)); // eslint-disable-line no-console
+      });
   });
 }
-
-// need to check if incognito tab and tracking protection, probably
-// going to send this from the bootstrap side and set in storage
-
-// export default function sendMetricsData(o) {
-//   if (browser.storage.)
-//   browser.tabs.query({currentWindow: true, active: true}).then(tabs => {
-//     if (tabs.filter(t => t.incognito).length) return;
-//   });
-// }
