@@ -101,9 +101,8 @@ function whenReady(cb) {
 // I can't get frame scripts working, so instead we just set global state directly in react. fml
 function send(msg) {
   whenReady(() => {
-    const newData = Object.assign({}, mvWindow.wrappedJSObject.AppData, msg);
-    console.error('SEND:', mvWindow.wrappedJSObject.AppData, 'NEW DATA:::', newData, 'MSG:::', msg);
-    mvWindow.wrappedJSObject.AppData.set(newData);
+    const newData = Object.assign(mvWindow.wrappedJSObject.AppData, msg);
+    mvWindow.wrappedJSObject.AppData = newData;
   });
 }
 
@@ -156,7 +155,7 @@ function create() {
 
   // const windowArgs = `left=${x},top=${y},chrome,dialog=no,width=${prefs.width},height=${prefs.height},titlebar=no`;
   // implicit assignment to mvWindow global
-  mvWindow = window.open('chrome://minvid-data/content/default.html', 'min-vid', windowArgs);
+  mvWindow = window.open('resource://minvid-data/default.html', 'min-vid', windowArgs);
   // once the window's ready, make it always topmost
   whenReady(() => { topify(mvWindow); });
   initCommunication();
