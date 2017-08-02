@@ -31,7 +31,7 @@ let commandPollTimer;
 // This must be why we get those dead object errors. Note that mvWindow
 // is passed into the DraggableElement constructor, could be a source of
 // those errors. Maybe pass a getter instead of a window reference.
-let mvWindow;
+let mvWindow, webExtPort; // global port for communication with webextension
 
 XPCOMUtils.defineLazyModuleGetter(this, 'AddonManager',
                                   'resource://gre/modules/AddonManager.jsm');
@@ -40,21 +40,100 @@ XPCOMUtils.defineLazyModuleGetter(this, 'Console',
 XPCOMUtils.defineLazyModuleGetter(this, 'Services',
                                   'resource://gre/modules/Services.jsm');
 XPCOMUtils.defineLazyModuleGetter(this, 'LegacyExtensionsUtils',
-                                 'resource://gre/modules/LegacyExtensionsUtils.jsm');
+                                  'resource://gre/modules/LegacyExtensionsUtils.jsm');
 
-let webExtPort; // global port for communication with webextension
+const windowListener = {
+  onOpenWindow: function (aXULWindow) {
+    // Wait for the window to finish loading
+    let aDOMWindow = aXULWindow.QueryInterface(Ci.nsIInterfaceRequestor).getInterface(Ci.nsIDOMWindowInternal || Ci.nsIDOMWindow);
+    aDOMWindow.addEventListener('load', function () {
+      aDOMWindow.removeEventListener('load', arguments.callee, false);
+      windowListener.loadIntoWindow(aDOMWindow, aXULWindow);
+    }, false);
+  },
+  register: function () {
+    // Load into any existing windows
+    let XULWindows = Services.wm.getXULWindowEnumerator(null);
+    while (XULWindows.hasMoreElements()) {
+      let aXULWindow = XULWindows.getNext();
+      let aDOMWindow = aXULWindow.QueryInterface(Ci.nsIInterfaceRequestor).getInterface(Ci.nsIDOMWindowInternal || Ci.nsIDOMWindow);
+      windowListener.loadIntoWindow(aDOMWindow, aXULWindow);
+    }
+    // Listen to new windows
+    Services.wm.addListener(windowListener);
+  },
+  unregister: function () {
+    // Unload from any existing windows
+    let XULWindows = Services.wm.getXULWindowEnumerator(null);
+    while (XULWindows.hasMoreElements()) {
+      let aXULWindow = XULWindows.getNext();
+      let aDOMWindow = aXULWindow.QueryInterface(Ci.nsIInterfaceRequestor).getInterface(Ci.nsIDOMWindowInternal || Ci.nsIDOMWindow);
+      aDOMWindow.removeEventListener('contextmenu', this.handleContextMenu);
+      windowListener.unloadFromWindow(aDOMWindow, aXULWindow);
+    }
+    // Stop listening so future added windows dont get this attached
+    Services.wm.removeListener(windowListener);
+  },
+  loadIntoWindow: function (aDOMWindow) {
+    if (!aDOMWindow) return;
+    aDOMWindow.addEventListener('contextmenu', ev => {
+      console.log('gContextMenu', ev.mCurrentBrowser.ownerGlobal.gContextMenu);
+      console.log('oncontextmenu', ev, ev.mCurrentBrowser.ownerGlobal.gContextMenu.target);
+      contextMenuOptions(aDOMWindow);
+    });
+    // aDOMWindow.document.oncontextmenu = function(ev) {
+    //   console.log('oncontextmenu', ev);
+    //   contextMenuOptions(aDOMWindow);
+    // };
+  },
+
+  unloadFromWindow: function (aDOMWindow) {
+    if (!aDOMWindow) return;
+    const myMenu = aDOMWindow.document.getElementById('myMenu');
+    if (myMenu) myMenuItem.parentNode.removeChild(myMenu);
+  }
+};
+
+function contextMenuOptions(aDOMWindow) {
+  const contentAreaContextMenu = aDOMWindow.document.getElementById('contentAreaContextMenu');
+  if (!contentAreaContextMenu) return;
+  const menu = aDOMWindow.document.createElement('menu');
+  menu.setAttribute('label', 'Min Vid');
+  menu.setAttribute('id', 'myMenu');
+
+  const playMenuItem = aDOMWindow.document.createElement('menuitem');
+  playMenuItem.setAttribute('label', 'Play Now');
+  playMenuItem.setAttribute('oncommand', () => {contextMenuLaunch('play_now');});
+
+  const addMenuItem = aDOMWindow.document.createElement('menuitem');
+  addMenuItem.setAttribute('label', 'Add to Queue');
+  addMenuItem.setAttribute('oncommand', () => {contextMenuLaunch('add');});
+
+  const menuPopup = aDOMWindow.document.createElement('menupopup');
+  menuPopup.appendChild(playMenuItem);
+  menuPopup.appendChild(addMenuItem);
+
+  menu.appendChild(menuPopup);
+  contentAreaContextMenu.appendChild(menu);
+}
+
+function contextMenuLaunch(label) {
+  console.log('context menu button: ', label);
+  webExtPort.postMessage({
+    content: 'context-menu',
+    data: {label: label}
+  });
+}
 
 function startup(data, reason) { // eslint-disable-line no-unused-vars
+  windowListener.register();
   // If the webext is already running, bail
   if (data.webExtension.started) return;
   data.webExtension.startup(reason).then(api => {
     api.browser.runtime.onConnect.addListener(port => {
       webExtPort = port;
       webExtPort.onMessage.addListener((msg) => {
-        if (msg.content === 'window:send') {
-          console.log('called window:send == ', msg);
-          send(msg.data);
-        }
+        if (msg.content === 'window:send') send(msg.data);
         else if (msg.content === 'window:prepare') updateWindow();
         else if (msg.content === 'window:close') closeWindow();
         else if (msg.content === 'window:minimize') minimize();
@@ -70,6 +149,7 @@ function shutdown(data, reason) { // eslint-disable-line no-unused-vars
     id: ADDON_ID,
     resourceURI: data.resourceURI
   }).shutdown(reason);
+  windowListener.unregister();
 }
 
 // These are mandatory in bootstrap.js, even if unused
