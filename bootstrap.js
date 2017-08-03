@@ -150,6 +150,7 @@ function shutdown(data, reason) { // eslint-disable-line no-unused-vars
     resourceURI: data.resourceURI
   }).shutdown(reason);
   windowListener.unregister();
+
 }
 
 // These are mandatory in bootstrap.js, even if unused

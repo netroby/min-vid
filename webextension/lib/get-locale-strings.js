@@ -2,7 +2,6 @@ const _ = browser.i18n.getMessage;
 
 export default function(domain, isAudio) {
   const mediaType = isAudio ? _('media_type_audio') : _('media_type_video');
-
   return JSON.stringify({
     errorMsg: _('error_msg'),
     errorLink: _('error_link'),
