@@ -4,9 +4,9 @@ import ReactTooltip from 'react-tooltip';
 import formatTime from '../client-lib/format-time';
 import sendToAddon from '../client-lib/send-to-addon';
 
-const playIcon = '../data/img/play-blue.svg';
-const addIcon = '../data/img/add.svg';
-const errorIcon = '../data/img/static-static.png';
+const playIcon = 'resource://minvid-data/img/play-blue.svg';
+const addIcon = 'resource://minvid-data/img/add.svg';
+const errorIcon = 'resource://minvid-data/img/static-static.png';
 
 export default class Item extends React.Component {
   constructor(props) {
