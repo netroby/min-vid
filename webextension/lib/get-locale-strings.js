@@ -1,19 +1,7 @@
 const _ = browser.i18n.getMessage;
 
-// const _ = function() {
-//   try {
-//     browser.i18n.getMessage.apply(this, arguments);
-//   } catch(err) {
-//     console.log('my err', arguments);
-//   }
-// };
-
-export default function() {
-  // domain, isAudio
-  // console.log('isAudio type:', isAudio, _('media_type_video'), _('media_type_audio'));
-
-  // TODO: figure out why this isn't being set!??!
-  // const mediaType = isAudio ? _('media_type_audio') : _('media_type_audio');
+export default function(domain, isAudio) {
+  const mediaType = isAudio ? _('media_type_audio') : _('media_type_video');
 
   return JSON.stringify({
     errorMsg: _('error_msg'),
@@ -27,7 +15,7 @@ export default function() {
     errorScRestricted: _('error_sc_restricted'),
     itemAddedNotification: _('item_added_notification'),
     endOfQueue: _('end_of_queue'),
-    loadingMsg: 'This is DUMB',
+    loadingMsg: _('loading_view_msg', [mediaType, domain]),
     confirmMsg: _('confirm_msg'),
     addConfirmMsg: _('add_confirm_msg'),
     playConfirmMsg: _('play_confirm_msg'),
