@@ -78,7 +78,6 @@
   },
   "dependencies": {
     "babel-eslint": "7.2.3",
-    "gl-waveform": "file:///home/meandave/Code/gl-waveform",
     "pontoon-to-webext": "1.0.2"
   }
 }
