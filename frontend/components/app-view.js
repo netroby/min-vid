@@ -6,6 +6,7 @@ import ConfirmView from './confirm-view';
 
 export default class AppView extends React.Component {
   render() {
+    if (this.props.confirm) window.AppData.set({minimized: false});
     const confirmView = this.props.confirm ? (<ConfirmView {...this.props}/>) : null;
     const hideLoadingView = (this.props.queue.length && this.props.queue[0].error);
 
