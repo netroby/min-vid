@@ -10,11 +10,9 @@
 import getRandomId from './lib/get-random-id';
 const store = browser.storage.local;
 
-store.clear(); // TODO: remove this before launch
-
 function initStorage() {
   store.get().then(r => {
-    let storage = {};
+    let storage = Object.assign({}, r);
     if (!r.clientUUID) storage.clientUUID = getRandomId();
     if (!r.width) storage.width = browser.runtime.getManifest().config['DEFAULT_WIDTH'];
     if (!r.height) storage.height = browser.runtime.getManifest().config['DEFAULT_HEIGHT'];
