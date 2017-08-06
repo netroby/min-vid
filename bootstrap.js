@@ -76,15 +76,7 @@ const windowListener = {
   },
   loadIntoWindow: function (aDOMWindow) {
     if (!aDOMWindow) return;
-    aDOMWindow.addEventListener('contextmenu', ev => {
-      console.log('gContextMenu', ev.mCurrentBrowser.ownerGlobal.gContextMenu);
-      console.log('oncontextmenu', ev, ev.mCurrentBrowser.ownerGlobal.gContextMenu.target);
-      contextMenuOptions(aDOMWindow);
-    });
-    // aDOMWindow.document.oncontextmenu = function(ev) {
-    //   console.log('oncontextmenu', ev);
-    //   contextMenuOptions(aDOMWindow);
-    // };
+    aDOMWindow.addEventListener('contextmenu', () => contextMenuOptions(aDOMWindow));
   },
 
   unloadFromWindow: function (aDOMWindow) {
@@ -114,11 +106,13 @@ function contextMenuOptions(aDOMWindow) {
   menuPopup.appendChild(addMenuItem);
 
   menu.appendChild(menuPopup);
+  // menu.setAttribute('hidden', true);
   contentAreaContextMenu.appendChild(menu);
 }
 
 function contextMenuLaunch(label) {
-  console.log('context menu button: ', label);
+  // const menu = aDOMWindow.document.createElement('menu');
+  // menu.setAttribute('hidden', true);
   webExtPort.postMessage({
     content: 'context-menu',
     data: {label: label}
