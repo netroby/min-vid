@@ -176,6 +176,7 @@ function whenReady(cb) {
 function send(msg) {
   whenReady(() => {
     const newData = Object.assign(mvWindow.wrappedJSObject.AppData, msg);
+    if (newData.confirm) maximize();
     mvWindow.wrappedJSObject.AppData = newData;
   });
 }

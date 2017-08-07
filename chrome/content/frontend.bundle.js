@@ -25262,7 +25262,7 @@ var AppView = function (_React$Component) {
   _createClass(AppView, [{
     key: 'render',
     value: function render() {
-      if (this.props.confirm) window.AppData.set({ minimized: false });
+      // if (this.props.confirm) window.AppData.set({minimized: false});
       var confirmView = this.props.confirm ? _react2.default.createElement(_confirmView2.default, this.props) : null;
       var hideLoadingView = this.props.queue.length && this.props.queue[0].error;
 
