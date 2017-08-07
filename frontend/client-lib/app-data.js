@@ -30,7 +30,6 @@ function init() {
     set(obj, prop, value) {
       if (prop === 'strings' || prop === 'queue' || prop === 'history' || prop === 'confirmContent') {
         if (typeof value === 'object') {
-          console.log('value is already object', prop, value);
           obj[prop] = value;
         } else {
           try {

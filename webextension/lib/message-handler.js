@@ -9,7 +9,7 @@ export default function(msg) {
   const opts = msg;
   if (title === 'send-to-tab') {
     const pageUrl = opts.launchUrl ? opts.launchUrl : getPageUrl(opts.domain, opts.id, opts.time);
-    if (pageUrl) browser.tabs.create({url: pageUrl})
+    if (pageUrl) browser.tabs.create({url: pageUrl});
     else {
       console.error('could not parse page url for ', opts); // eslint-disable-line no-console
       send({error: 'Error loading video from ' + opts.domain});
@@ -93,8 +93,8 @@ export default function(msg) {
       }
 
       if (opts.isHistory) {
-        r.queue.unshift(r.history[opts.index])
-      } else r.queue.unshift(r.queue.splice(opts.index, 1)[0])
+        r.queue.unshift(r.history[opts.index]);
+      } else r.queue.unshift(r.queue.splice(opts.index, 1)[0]);
 
       sendMetricsData({
         object: 'queue_view',

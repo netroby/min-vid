@@ -48,7 +48,7 @@
     "mozilla/use-ownerGlobal": 1,
     "consistent-return": 1,
     "eqeqeq": 1,
-    "indent": 2,
+    "indent": ["error", 2],
     "keyword-spacing": 2,
     "no-extra-boolean-cast": 0,
     "no-unused-vars": ["error", {"vars": "all", "args": "none"}],

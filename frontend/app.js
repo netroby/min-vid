@@ -6,8 +6,6 @@ import { init } from './client-lib/app-data';
 
 init();
 
-console.log('APPDATA AFTER INIT', window.AppData);
-
 window.pendingCommands = [];
 
 window.resetCommands = function() {

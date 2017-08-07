@@ -12,7 +12,7 @@ const store = browser.storage.local;
 
 function initStorage() {
   store.get().then(r => {
-    let storage = Object.assign({}, r);
+    const storage = Object.assign({}, r);
     if (!r.clientUUID) storage.clientUUID = getRandomId();
     if (!r.width) storage.width = browser.runtime.getManifest().config['DEFAULT_WIDTH'];
     if (!r.height) storage.height = browser.runtime.getManifest().config['DEFAULT_HEIGHT'];

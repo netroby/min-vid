@@ -18,6 +18,7 @@ XPCOMUtils.defineLazyModuleGetter(this, 'DraggableElement',
 XPCOMUtils.defineLazyModuleGetter(this, 'LegacyExtensionsUtils',
                                   'resource://gre/modules/LegacyExtensionsUtils.jsm');
 
+const LOCATION = { x: 0, y: 0 };
 // TODO: consolidate with webextension/manifest.json
 let DIMENSIONS = {
   height: 260,
@@ -42,86 +43,7 @@ XPCOMUtils.defineLazyModuleGetter(this, 'Services',
 XPCOMUtils.defineLazyModuleGetter(this, 'LegacyExtensionsUtils',
                                   'resource://gre/modules/LegacyExtensionsUtils.jsm');
 
-const windowListener = {
-  onOpenWindow: function (aXULWindow) {
-    // Wait for the window to finish loading
-    let aDOMWindow = aXULWindow.QueryInterface(Ci.nsIInterfaceRequestor).getInterface(Ci.nsIDOMWindowInternal || Ci.nsIDOMWindow);
-    aDOMWindow.addEventListener('load', function () {
-      aDOMWindow.removeEventListener('load', arguments.callee, false);
-      windowListener.loadIntoWindow(aDOMWindow, aXULWindow);
-    }, false);
-  },
-  register: function () {
-    // Load into any existing windows
-    let XULWindows = Services.wm.getXULWindowEnumerator(null);
-    while (XULWindows.hasMoreElements()) {
-      let aXULWindow = XULWindows.getNext();
-      let aDOMWindow = aXULWindow.QueryInterface(Ci.nsIInterfaceRequestor).getInterface(Ci.nsIDOMWindowInternal || Ci.nsIDOMWindow);
-      windowListener.loadIntoWindow(aDOMWindow, aXULWindow);
-    }
-    // Listen to new windows
-    Services.wm.addListener(windowListener);
-  },
-  unregister: function () {
-    // Unload from any existing windows
-    let XULWindows = Services.wm.getXULWindowEnumerator(null);
-    while (XULWindows.hasMoreElements()) {
-      let aXULWindow = XULWindows.getNext();
-      let aDOMWindow = aXULWindow.QueryInterface(Ci.nsIInterfaceRequestor).getInterface(Ci.nsIDOMWindowInternal || Ci.nsIDOMWindow);
-      aDOMWindow.removeEventListener('contextmenu', this.handleContextMenu);
-      windowListener.unloadFromWindow(aDOMWindow, aXULWindow);
-    }
-    // Stop listening so future added windows dont get this attached
-    Services.wm.removeListener(windowListener);
-  },
-  loadIntoWindow: function (aDOMWindow) {
-    if (!aDOMWindow) return;
-    aDOMWindow.addEventListener('contextmenu', () => contextMenuOptions(aDOMWindow));
-  },
-
-  unloadFromWindow: function (aDOMWindow) {
-    if (!aDOMWindow) return;
-    const myMenu = aDOMWindow.document.getElementById('myMenu');
-    if (myMenu) myMenuItem.parentNode.removeChild(myMenu);
-  }
-};
-
-function contextMenuOptions(aDOMWindow) {
-  const contentAreaContextMenu = aDOMWindow.document.getElementById('contentAreaContextMenu');
-  if (!contentAreaContextMenu) return;
-  const menu = aDOMWindow.document.createElement('menu');
-  menu.setAttribute('label', 'Min Vid');
-  menu.setAttribute('id', 'myMenu');
-
-  const playMenuItem = aDOMWindow.document.createElement('menuitem');
-  playMenuItem.setAttribute('label', 'Play Now');
-  playMenuItem.setAttribute('oncommand', () => {contextMenuLaunch('play_now');});
-
-  const addMenuItem = aDOMWindow.document.createElement('menuitem');
-  addMenuItem.setAttribute('label', 'Add to Queue');
-  addMenuItem.setAttribute('oncommand', () => {contextMenuLaunch('add');});
-
-  const menuPopup = aDOMWindow.document.createElement('menupopup');
-  menuPopup.appendChild(playMenuItem);
-  menuPopup.appendChild(addMenuItem);
-
-  menu.appendChild(menuPopup);
-  menu.setAttribute('hidden', true);
-  contentAreaContextMenu.appendChild(menu);
-}
-
-function contextMenuLaunch(label) {
-  const menu = aDOMWindow.document.createElement('menu');
-  menu.setAttribute('hidden', true);
-  webExtPort.postMessage({
-    content: 'context-menu',
-    data: {label: label}
-  });
-}
-
 function startup(data, reason) { // eslint-disable-line no-unused-vars
-  // windowListener.register();
-  // If the webext is already running, bail
   if (data.webExtension.started) return;
   data.webExtension.startup(reason).then(api => {
     api.browser.runtime.onConnect.addListener(port => {
@@ -143,7 +65,6 @@ function shutdown(data, reason) { // eslint-disable-line no-unused-vars
     id: ADDON_ID,
     resourceURI: data.resourceURI
   }).shutdown(reason);
-  // windowListener.unregister();
 }
 
 // These are mandatory in bootstrap.js, even if unused
@@ -185,7 +106,7 @@ function send(msg) {
 // close the window, no detectable event is fired. Instead, we have to listen
 // for the nsIObserver event fired when _any_ XUL window is closed, then loop
 // over all windows and look for the minvid window.
-const onWindowClosed = (evt) => {
+const onWindowClosed = () => {
   // Note: we pass null here because minvid window is not of type 'navigator:browser'
   const enumerator = Services.wm.getEnumerator(null);
 
@@ -226,7 +147,7 @@ function create() {
 
   const window = WM.getMostRecentWindow('navigator:browser');
   // TODO: pass correct dimensions and location
-  const windowArgs = `left=${0},top=${0},chrome,dialog=no,width=${350},height=${280},titlebar=no`;
+  const windowArgs = `left=${LOCATION.x},top=${LOCATION.y},chrome,dialog=no,width=${DIMENSIONS.width},height=${DIMENSIONS.height},titlebar=no`;
 
   // const windowArgs = `left=${x},top=${y},chrome,dialog=no,width=${prefs.width},height=${prefs.height},titlebar=no`;
   // implicit assignment to mvWindow global
@@ -285,9 +206,7 @@ function makeDraggable() {
 
   // Update the saved position each time the draggable window is dropped.
   // Listening for 'dragend' events doesn't work, so use 'mouseup' instead.
-  mvWindow.document.addEventListener('mouseup', () => {
-    sendLocation();
-  });
+  mvWindow.document.addEventListener('mouseup', sendLocation);
 }
 
 function destroy(isUnload) {
@@ -304,10 +223,6 @@ function minimize() {
   sendLocation();
 }
 
-// function isMinimized() {
-//   return mvWindow.innerHeight <= DEFAULT_DIMENSIONS.minimizedHeight;
-// }
-
 function maximize() {
   mvWindow.resizeTo(DIMENSIONS.width, DIMENSIONS.height);
   mvWindow.moveBy(0, DIMENSIONS.minimizedHeight - DIMENSIONS.height);
@@ -317,6 +232,6 @@ function maximize() {
 function sendLocation() {
   webExtPort.postMessage({
     content: 'position-changed',
-    data: {left: mvWindow.screenX, top: mvWindow.screenY}
+    data: {left: LOCATION.x = mvWindow.screenX, top: LOCATION.y = mvWindow.screenY}
   });
 }

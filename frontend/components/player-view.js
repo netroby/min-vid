@@ -1,7 +1,6 @@
 import React from 'react';
 import cn from 'classnames';
 import keyboardJS from 'keyboardjs';
-import debounce from 'lodash.debounce';
 import ReactPlayer from 'react-player';
 
 import AudioCtrl from '../client-lib/audio-ctrl';

@@ -4,4 +4,3 @@ chrome/content/frontend.bundle.js
 chrome/content/www-widgetapi.js
 webextension/dist/background.bundle.js
 stories/
-__tests__/
