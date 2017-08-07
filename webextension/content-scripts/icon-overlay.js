@@ -280,7 +280,7 @@ function sendMetric(method) {
   browser.runtime.sendMessage({
     title: 'metric',
     object: 'overlay_icon',
-    method
+    method: method
   });
 }
 

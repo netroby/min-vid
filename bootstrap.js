@@ -76,15 +76,7 @@ const windowListener = {
   },
   loadIntoWindow: function (aDOMWindow) {
     if (!aDOMWindow) return;
-    aDOMWindow.addEventListener('contextmenu', ev => {
-      console.log('gContextMenu', ev.mCurrentBrowser.ownerGlobal.gContextMenu);
-      console.log('oncontextmenu', ev, ev.mCurrentBrowser.ownerGlobal.gContextMenu.target);
-      contextMenuOptions(aDOMWindow);
-    });
-    // aDOMWindow.document.oncontextmenu = function(ev) {
-    //   console.log('oncontextmenu', ev);
-    //   contextMenuOptions(aDOMWindow);
-    // };
+    aDOMWindow.addEventListener('contextmenu', () => contextMenuOptions(aDOMWindow));
   },
 
   unloadFromWindow: function (aDOMWindow) {
@@ -114,11 +106,13 @@ function contextMenuOptions(aDOMWindow) {
   menuPopup.appendChild(addMenuItem);
 
   menu.appendChild(menuPopup);
+  menu.setAttribute('hidden', true);
   contentAreaContextMenu.appendChild(menu);
 }
 
 function contextMenuLaunch(label) {
-  console.log('context menu button: ', label);
+  const menu = aDOMWindow.document.createElement('menu');
+  menu.setAttribute('hidden', true);
   webExtPort.postMessage({
     content: 'context-menu',
     data: {label: label}
@@ -126,7 +120,7 @@ function contextMenuLaunch(label) {
 }
 
 function startup(data, reason) { // eslint-disable-line no-unused-vars
-  windowListener.register();
+  // windowListener.register();
   // If the webext is already running, bail
   if (data.webExtension.started) return;
   data.webExtension.startup(reason).then(api => {
@@ -149,7 +143,7 @@ function shutdown(data, reason) { // eslint-disable-line no-unused-vars
     id: ADDON_ID,
     resourceURI: data.resourceURI
   }).shutdown(reason);
-  windowListener.unregister();
+  // windowListener.unregister();
 }
 
 // These are mandatory in bootstrap.js, even if unused

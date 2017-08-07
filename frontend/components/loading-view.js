@@ -1,5 +1,4 @@
 import React from 'react';
-import cn from 'classnames';
 import GeneralControls from './general-controls';
 
 export default class LoadingView extends React.Component {
@@ -19,10 +18,7 @@ export default class LoadingView extends React.Component {
   render() {
     return (
         <div className='loading' onMouseEnter={this.enterView.bind(this)} onMouseLeave={this.leaveView.bind(this)}>
-          <div className={cn('controls drag', {hidden: !this.state.hovered, minimized: this.props.minimized})}>
-            <div className='left' />
-            <GeneralControls {...this.props} />
-          </div>
+          <GeneralControls {...this.props} hovered={this.state.hovered} />
 
           <div className="loading-wrapper">
             <img src='img/loading-bars.svg' alt='loading animation' width={64} height={64} />

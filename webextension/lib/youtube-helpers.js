@@ -56,6 +56,8 @@ function getVideo(opts, cb) {
             else item.error = 'error_youtube_not_found';
           }
 
+          console.log('get youtube video:: ', item);
+
           cb(item);
         }));
     }));
