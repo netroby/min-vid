@@ -565,6 +565,8 @@ function launchVideo(opts) {
             method: 'launch:video:' + action,
             domain: opts.domain
           });
+          // TODO: figure out isMINIMIZED
+          // if (windowUtils.isMinimized()) windowUtils.maximize();
           (0, _windowMessages.send)(Object.assign(opts, {
             confirm: true,
             error: false,
@@ -607,6 +609,15 @@ function launchVideo(opts) {
         if (isAudio(item.url)) item.player = 'audio';
 
         if (action === 'play') r.queue.unshift(item);else r.queue.push(item);
+
+        // add the list of queue after the play not before
+        if (item.addToQueue) {
+          for (var i = 0; i < item.addToQueue.length; ++i) {
+            if (isAudio(item.addToQueue[i].url)) item.addToQueue[i].player = 'audio';
+            r.queue.push(item.addToQueue[i]);
+          }
+          delete item.addToQueue; // clean list
+        }
 
         store.set({ queue: r.queue });
         var videoOptions = {
@@ -1438,6 +1449,19 @@ Object.defineProperty(exports, "__esModule", {
 exports.default = getSoundcloudUrl;
 var clientId = browser.runtime.getManifest().config['SOUNDCLOUD_CLIENT_ID'];
 
+function getSoundcloudArtworkUrl(json) {
+  // track artwork
+  if (json.artwork_url) {
+    return json.artwork_url;
+  }
+  // user avatar
+  if (json.user.avatar_url) {
+    return json.user.avatar_url;
+  }
+  // default image
+  return null;
+}
+
 function getSoundcloudUrl(opts, cb) {
   var url = 'https://api.soundcloud.com/resolve.json?client_id=' + clientId + '&url=' + opts.url;
   var item = {
@@ -1450,11 +1474,19 @@ function getSoundcloudUrl(opts, cb) {
     error: false
   };
 
-  fetch(url, {
-    method: 'GET',
+  fetch(url, { method: 'GET',
     mode: 'cors',
-    cache: 'default'
-  }).then(function (res) {
+    cache: 'default' }).then(function (res) {
+    var item = {
+      url: opts.url,
+      title: '',
+      preview: '',
+      duration: 0,
+      launchUrl: opts.url,
+      domain: 'soundcloud.com',
+      error: false,
+      addToQueue: undefined
+    };
     if (res.status === 429) {
       item.error = 'errorScTrackLimit';
       cb(item);
@@ -1465,10 +1497,23 @@ function getSoundcloudUrl(opts, cb) {
       res.json().then(function (json) {
         if (!json) {
           item.error = 'errorScTrackConnection';
-        } else if (json.kind !== 'track') {
+        } else if (!(json.kind === 'track' || json.kind === 'playlist')) {
           item.error = 'errorScTrack';
         } else if (!json.streamable) {
           item.error = 'errorScStreamable';
+        } else if (json.kind === 'playlist' && json.tracks !== undefined) {
+          item.addToQueue = json.tracks.map(function (t) {
+            return {
+              url: t.stream_url + '?client_id=' + clientId,
+              title: t.title,
+              preview: getSoundcloudArtworkUrl(t),
+              duration: t.duration * .001, // convert to seconds
+              launchUrl: t.permalink_url,
+              domain: 'soundcloud.com',
+              error: false
+            };
+          });
+          item = Object.assign(item, item.addToQueue.shift());
         } else {
           item = Object.assign(item, {
             url: json.stream_url + '?client_id=' + clientId,
@@ -1477,6 +1522,7 @@ function getSoundcloudUrl(opts, cb) {
             duration: json.duration * .001 // convert to seconds
           });
         }
+
         cb(item);
       });
     }

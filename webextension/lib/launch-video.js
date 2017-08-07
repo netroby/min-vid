@@ -54,8 +54,6 @@ export default function launchVideo(opts) {
             method: `launch:video:${action}`,
             domain: opts.domain
           });
-          // TODO: figure out isMINIMIZED
-          // if (windowUtils.isMinimized()) windowUtils.maximize();
           send(Object.assign(opts, {
             confirm: true,
             error: false,
